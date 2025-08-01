@@ -14,6 +14,16 @@ import {
   type Location,
   type PlayerInfo 
 } from '../utils/gameLogic';
+import {
+  playMenuClick,
+  playStartGame,
+  playNewGame,
+  playSeeLocation,
+  playSeenRole,
+  playResetLocations,
+  playError,
+  playSuccess
+} from '../utils/soundEffects';
 
 // Define the different screens/states of the game
 type GameScreen = 'home' | 'howToPlay' | 'setup' | 'nextScreen' | 'playerReveal' | 'gameEnd';
@@ -36,23 +46,9 @@ const SpyfallGame: React.FC = () => {
     console.log('🎲 Game initialized with all locations:', getAvailableLocations());
   }, []);
 
-  // Sound effect function (simplified version of your playSound)
-  const playClickSound = () => {
-    // You can add actual sound files later or use Web Audio API
-    console.log('🔊 Click sound played');
-  };
-
-  const playErrorSound = () => {
-    console.log('❌ Error sound played');
-  };
-
-  const playSuccessSound = () => {
-    console.log('✅ Success sound played');
-  };
-
   // Screen navigation functions (converted from your onEvent functions)
   const goToScreen = (screen: GameScreen) => {
-    playClickSound();
+    playMenuClick();
     setCurrentScreen(screen);
     setErrorMessage(''); // Clear any error messages when changing screens
   };
@@ -64,7 +60,7 @@ const SpyfallGame: React.FC = () => {
     // Validate input (same validation as your original code)
     if (isNaN(players) || players <= 0) {
       setErrorMessage('Enter valid # of players');
-      playErrorSound();
+      playError();
       return;
     }
 
@@ -89,19 +85,19 @@ const SpyfallGame: React.FC = () => {
     setCurrentPlayerIndex(0);
     
     // Move to intermediate screen first (like your original nextScreen)
-    playSuccessSound();
+    playStartGame();
     setCurrentScreen('nextScreen');
   };
 
   // Function to go from nextScreen to first player reveal
   const startPlayerReveals = () => {
-    playClickSound();
+    playSeeLocation();
     setCurrentScreen('playerReveal');
   };
 
   // Function to go back to nextScreen after viewing a role (and increment player)
   const goToNextScreen = () => {
-    playClickSound();
+    playSeenRole();
     
     // Check if this was the last player
     if (currentPlayerIndex >= playerInfo.length - 1) {
@@ -118,7 +114,7 @@ const SpyfallGame: React.FC = () => {
 
   // This function is no longer needed since goToNextScreen handles everything
   const revealNextPlayer = () => {
-    playClickSound();
+    playMenuClick();
     
     // If there are more players to reveal
     if (currentPlayerIndex < playerInfo.length - 1) {
@@ -135,14 +131,14 @@ const SpyfallGame: React.FC = () => {
   // Function to reset all locations (for completely fresh sessions)
   const resetAllLocations = () => {
     resetLocations();
-    playClickSound();
+    playResetLocations();
     console.log('🔄 All locations reset for fresh session');
   };
 
   // Restart game function (converted from your homeButton click event)
   const restartGame = () => {
     stopSpeech();
-    playClickSound();
+    playNewGame();
     
     // DON'T reset locations - they should stay removed from previous games
     // Only reset the game state to go back to home screen
