@@ -8,6 +8,7 @@ import {
   generateHelperQuestions,
   speakText,
   stopSpeech,
+  resetLocations,
   LOCATIONS,
   type Location,
   type PlayerInfo 
@@ -121,6 +122,9 @@ const SpyfallGame: React.FC = () => {
     stopSpeech();
     playClickSound();
     
+    // Reset the locations array for a fresh game (like your original Code.org version)
+    resetLocations();
+    
     // Reset all game state
     setCurrentScreen('home');
     setNumPlayers(0);
@@ -137,7 +141,7 @@ const SpyfallGame: React.FC = () => {
   const speakLocations = () => {
     stopSpeech();
     if (availableLocations.length > 0) {
-      const locationsText = generateLocationsString(availableLocations);
+      const locationsText = generateLocationsString(availableLocations, commonLocation || undefined);
       speakText(locationsText.replace(/\n/g, ', '), 'female', 'English');
     }
   };
@@ -259,11 +263,8 @@ const SpyfallGame: React.FC = () => {
           {isFirstPlayer ? (
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-gray-800">Ready to Start!</h2>
-              <p className="text-lg text-gray-600">
-                Roles have been assigned to all {numPlayers} players.
-              </p>
               <p className="text-gray-600">
-                Player 1, you're up first! Click the button below to see your role.
+                Player 1, you're up first!
               </p>
             </div>
           ) : !isLastPlayer ? (
@@ -272,18 +273,12 @@ const SpyfallGame: React.FC = () => {
               <p className="text-lg text-gray-600">
                 Hand the device to Player {currentPlayerIndex + 1}
               </p>
-              <p className="text-gray-600">
-                Make sure the previous player can't see the screen, then click below to reveal the next role.
-              </p>
             </div>
           ) : (
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-gray-800">Final Player!</h2>
               <p className="text-lg text-gray-600">
                 Hand the device to Player {currentPlayerIndex + 1} (the last player)
-              </p>
-              <p className="text-gray-600">
-                After they see their role, you'll start the game!
               </p>
             </div>
           )}
@@ -292,33 +287,8 @@ const SpyfallGame: React.FC = () => {
             onClick={startPlayerReveals}
             className="game-button w-full mt-8"
           >
-            {isFirstPlayer ? '👀 SEE MY ROLE' : `👀 REVEAL PLAYER ${currentPlayerIndex + 1}`}
+            {isFirstPlayer ? '👀 SEE MY LOCATION' : `👀 REVEAL PLAYER ${currentPlayerIndex + 1}`}
           </button>
-          
-          <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <p className="text-sm text-gray-700">
-              <strong>🔒 Privacy Notice:</strong> This screen prevents players from accidentally seeing each other's roles when passing the device.
-            </p>
-          </div>
-          
-          {/* Show locations for reference */}
-          {availableLocations.length > 0 && (
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2 text-gray-700">📍 Possible Locations</h3>
-              <div 
-                className="bg-gray-50 rounded-lg p-3 text-xs cursor-pointer hover:bg-gray-100 transition-colors max-h-32 overflow-y-auto"
-                onClick={speakLocations}
-                title="Click to hear locations read aloud"
-              >
-                <div className="text-gray-600">
-                  {generateLocationsString(availableLocations)}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  🔊 Click to hear locations
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     );
@@ -366,24 +336,19 @@ const SpyfallGame: React.FC = () => {
                   <p className="text-2xl font-bold text-green-600">{currentPlayer.role}</p>
                 </div>
               </div>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-                <p className="text-sm text-gray-700">
-                  💡 Remember your role and try to catch the spy!
-                </p>
-              </div>
             </div>
           )}
           
+          <div className="mt-6 text-sm text-gray-600 text-center">
+            Remember your location + role, then click!
+          </div>
+          
           <button
             onClick={goToNextScreen}
-            className="game-button w-full mt-8"
+            className="game-button w-full mt-4"
           >
             ✅ I'VE SEEN MY ROLE
           </button>
-          
-          <div className="mt-4 text-sm text-gray-600">
-            Remember your role, then click to pass the device!
-          </div>
         </div>
       </div>
     );
@@ -395,35 +360,21 @@ const SpyfallGame: React.FC = () => {
       <div className="game-card max-w-2xl w-full">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">🎯 Game Started!</h2>
         
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Locations List */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-700">📍 Possible Locations</h3>
-            <div 
-              className="bg-gray-50 rounded-lg p-4 text-sm cursor-pointer hover:bg-gray-100 transition-colors"
-              onClick={speakLocations}
-              title="Click to hear locations read aloud"
-            >
-              <div className="whitespace-pre-line text-gray-700">
-                {generateLocationsString(availableLocations)}
-              </div>
-              <div className="text-xs text-gray-500 mt-2">
-                🔊 Click to hear locations
-              </div>
+        {/* Locations List */}
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold mb-4 text-gray-700">📍 Possible Locations</h3>
+          <div 
+            className="bg-gray-50 rounded-lg p-4 text-sm cursor-pointer hover:bg-gray-100 transition-colors"
+            onClick={speakLocations}
+            title="Click to hear locations read aloud"
+          >
+            <div className="whitespace-pre-line text-gray-700">
+              {generateLocationsString(availableLocations, commonLocation || undefined)}
+            </div>
+            <div className="text-xs text-gray-500 mt-2">
+              🔊 Click to hear locations
             </div>
           </div>
-          
-          {/* Roles for Current Location */}
-          {commonLocation && (
-            <div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-700">🎭 Roles at {commonLocation.name}</h3>
-              <div className="bg-blue-50 rounded-lg p-4 text-sm">
-                <div className="whitespace-pre-line text-gray-700">
-                  {generateRolesString(commonLocation)}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
         
         {/* Helper Questions */}
@@ -443,13 +394,6 @@ const SpyfallGame: React.FC = () => {
           >
             🏠 NEW GAME
           </button>
-        </div>
-        
-        <div className="mt-6 text-center text-gray-600">
-          <p className="text-sm">
-            Good luck! Remember: the spy wins if they guess the location correctly, 
-            everyone else wins if they identify the spy! 🕵️
-          </p>
         </div>
       </div>
     </div>

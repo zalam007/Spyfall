@@ -30,6 +30,7 @@ export const LOCATIONS: Location[] = [
   { name: "Costco", roles: ["Customer", "Cashier", "Stocker", "Manager", "Sample Giver"] },
   { name: "Funeral", roles: ["Priest", "Family Member", "Friend", "Long Time Enemy", "Gravedigger"] },
   { name: "Wedding", roles: ["Bride", "Groom", "Bridesmaid", "Groomsman", "Officiant"] },
+  { name: "spy", roles: ["spy"] }
 ];
 
 // Helper questions for the game - same as your original list
@@ -74,72 +75,112 @@ export const HELPER_QUESTIONS = [
   "Do you know anyone who has your role in real life?",
 ];
 
+// Global locations array that gets modified (like your original Code.org version)
+let gameLocations = [...LOCATIONS];
+
 /**
  * Assigns locations and roles to players
  * Converted from the original assignPlayerLocationsAndRoles function
+ * This matches your Code.org logic exactly
  * @param numPlayers - Number of players in the game
  * @returns Object containing player info, common location, and available locations
  */
 export function assignPlayerLocationsAndRoles(numPlayers: number) {
-  // Create a copy of locations to avoid modifying the original array
-  const availableLocations = [...LOCATIONS];
-  
-  // Choose a random common location for all non-spy players
-  const randomLocationIndex = Math.floor(Math.random() * availableLocations.length);
-  const commonLocation = availableLocations[randomLocationIndex];
-  
-  // Remove the selected location from available locations for the final list
-  availableLocations.splice(randomLocationIndex, 1);
-  
-  // Randomly select which player will be the spy
-  const spyIndex = Math.floor(Math.random() * numPlayers);
-  
   // Initialize array to store each player's assigned location and role
   const playerInfo: PlayerInfo[] = [];
   
-  // Make a copy of roles for the selected location to track which ones are used
+  // Choose a random common location from available locations
+  const randomLocationIndex = Math.floor(Math.random() * gameLocations.length);
+  const commonLocation = gameLocations[randomLocationIndex];
+  
+  // Create the locations list for display (includes current location)
+  // This is what players see as "possible locations" during the game
+  let availableLocationsForDisplay = [...gameLocations];
+  
+  // Handle special "spy" location case (everyone is spy game mode)
+  if (commonLocation.name === "spy") {
+    // Special case: everyone is a spy
+    for (let i = 0; i < numPlayers; i++) {
+      playerInfo[i] = { location: "spy", role: "spy" };
+    }
+    
+    // Remove spy from the locations for next game
+    gameLocations.splice(randomLocationIndex, 1);
+    
+    // For display purposes, show "Everyone is a spy!" instead of individual locations
+    // But we still need the locations array for the spy case display logic
+    const displayLocations = gameLocations.filter(loc => loc.name !== "spy");
+    
+    return {
+      playerInfo,
+      commonLocation,
+      availableLocations: displayLocations.sort((a, b) => a.name.localeCompare(b.name))
+    };
+  }
+  
+  // Normal game: randomly select which player will be the spy
+  const spyIndex = Math.floor(Math.random() * numPlayers);
+  
+  // Make a shallow copy of the roles for the selected location
   let availableRoles = [...commonLocation.roles];
   
-  // Assign locations and roles to each player
+  // Loop through each player to assign them locations and roles
   for (let i = 0; i < numPlayers; i++) {
+    // Skip if this player is the spy
     if (i === spyIndex) {
-      // This player is the spy - they get special spy info
       playerInfo[i] = { location: "spy", role: "spy" };
-    } else {
-      // This player gets the common location
-      
-      // If all roles have been used, reset the available roles
-      // This allows role repetition when there are more players than roles
-      if (availableRoles.length === 0) {
-        availableRoles = [...commonLocation.roles];
-      }
-      
-      // Randomly select an available role
-      const roleIndex = Math.floor(Math.random() * availableRoles.length);
-      const selectedRole = availableRoles.splice(roleIndex, 1)[0];
-      
-      // Assign the common location and selected role to this player
-      playerInfo[i] = { 
-        location: commonLocation.name, 
-        role: selectedRole 
-      };
+      continue;
     }
+    
+    // If all roles have been assigned at least once, refill the available roles array
+    if (availableRoles.length === 0) {
+      availableRoles = [...commonLocation.roles];
+    }
+    
+    // Randomly select a role from the available roles array
+    const roleIndex = Math.floor(Math.random() * availableRoles.length);
+    const selectedRole = availableRoles.splice(roleIndex, 1)[0];
+    
+    // Assign the selected location and role to the current player
+    playerInfo[i] = { location: commonLocation.name, role: selectedRole };
   }
+  
+  // Remove the selected location from the master locations array to prevent reuse in future games
+  gameLocations.splice(randomLocationIndex, 1);
+  
+  // Create display list: includes current location + remaining locations, sorted alphabetically
+  const displayLocations = [...availableLocationsForDisplay.filter(loc => loc.name !== "spy")];
   
   return {
     playerInfo,
     commonLocation,
-    availableLocations
+    availableLocations: displayLocations.sort((a, b) => a.name.localeCompare(b.name))
   };
+}
+
+/**
+ * Resets the locations array (for new games)
+ * Call this when starting a completely new session
+ */
+export function resetLocations() {
+  gameLocations = [...LOCATIONS];
 }
 
 /**
  * Generates a string of all available locations for display
  * Converted from the original updateLocationsString function
+ * Handles the special "spy" location case like your original Code.org version
  * @param locations - Array of location objects
+ * @param commonLocation - The current game's location (to check for spy mode)
  * @returns Formatted string of location names
  */
-export function generateLocationsString(locations: Location[]): string {
+export function generateLocationsString(locations: Location[], commonLocation?: Location): string {
+  // Check if this is the special "everyone is spy" game mode
+  if (commonLocation && commonLocation.name === "spy") {
+    return "Everyone is a spy!";
+  }
+  
+  // Normal case: return all locations sorted alphabetically
   return locations.map(location => location.name).join('\n');
 }
 
