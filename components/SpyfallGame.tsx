@@ -9,6 +9,7 @@ import {
   speakText,
   stopSpeech,
   resetLocations,
+  getAvailableLocations,
   LOCATIONS,
   type Location,
   type PlayerInfo 
@@ -28,6 +29,12 @@ const SpyfallGame: React.FC = () => {
   const [helperQuestions, setHelperQuestions] = useState<string>('');
   const [playerInputValue, setPlayerInputValue] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
+
+  // Initialize locations on first load
+  useEffect(() => {
+    resetLocations();
+    console.log('🎲 Game initialized with all locations:', getAvailableLocations());
+  }, []);
 
   // Sound effect function (simplified version of your playSound)
   const playClickSound = () => {
@@ -64,11 +71,19 @@ const SpyfallGame: React.FC = () => {
     // Store number of players
     setNumPlayers(players);
     
+    // Debug: Check available locations before assignment
+    console.log('🎲 Available locations before game:', getAvailableLocations());
+    
     // Assign locations and roles (using your original logic)
     const gameData = assignPlayerLocationsAndRoles(players);
     setPlayerInfo(gameData.playerInfo);
     setCommonLocation(gameData.commonLocation);
     setAvailableLocations(gameData.availableLocations);
+    
+    // Debug: Check what happened
+    console.log('🎯 Selected location:', gameData.commonLocation.name);
+    console.log('📍 Locations shown to players:', gameData.availableLocations.map(loc => loc.name));
+    console.log('🎲 Available locations after game:', getAvailableLocations());
     
     // Reset player reveal index
     setCurrentPlayerIndex(0);
@@ -117,13 +132,20 @@ const SpyfallGame: React.FC = () => {
     }
   };
 
+  // Function to reset all locations (for completely fresh sessions)
+  const resetAllLocations = () => {
+    resetLocations();
+    playClickSound();
+    console.log('🔄 All locations reset for fresh session');
+  };
+
   // Restart game function (converted from your homeButton click event)
   const restartGame = () => {
     stopSpeech();
     playClickSound();
     
-    // Reset the locations array for a fresh game (like your original Code.org version)
-    resetLocations();
+    // DON'T reset locations - they should stay removed from previous games
+    // Only reset the game state to go back to home screen
     
     // Reset all game state
     setCurrentScreen('home');
@@ -193,6 +215,13 @@ const SpyfallGame: React.FC = () => {
             className="game-button-secondary w-full"
           >
             📖 HOW TO PLAY
+          </button>
+          
+          <button
+            onClick={resetAllLocations}
+            className="game-button-secondary w-full text-sm"
+          >
+            🔄 RESET ALL LOCATIONS
           </button>
         </div>
       </div>
@@ -340,7 +369,7 @@ const SpyfallGame: React.FC = () => {
           )}
           
           <div className="mt-6 text-sm text-gray-600 text-center">
-            Remember your location + role, then click!
+            Remember your location + role!
           </div>
           
           <button

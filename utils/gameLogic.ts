@@ -93,63 +93,49 @@ export function assignPlayerLocationsAndRoles(numPlayers: number) {
   const randomLocationIndex = Math.floor(Math.random() * gameLocations.length);
   const commonLocation = gameLocations[randomLocationIndex];
   
-  // Create the locations list for display (includes current location)
+  // FIRST: Create the locations list for display (includes current location)
   // This is what players see as "possible locations" during the game
-  let availableLocationsForDisplay = [...gameLocations];
+  // This should include ALL current locations INCLUDING the one being played
+  const displayLocations = [...gameLocations];
   
-  // Handle special "spy" location case (everyone is spy game mode)
+  // Handle special "spy" location case (everyone is spy game mode)  
   if (commonLocation.name === "spy") {
     // Special case: everyone is a spy
     for (let i = 0; i < numPlayers; i++) {
       playerInfo[i] = { location: "spy", role: "spy" };
     }
+  } else {
+    // Normal game: randomly select which player will be the spy
+    const spyIndex = Math.floor(Math.random() * numPlayers);
     
-    // Remove spy from the locations for next game
-    gameLocations.splice(randomLocationIndex, 1);
+    // Make a shallow copy of the roles for the selected location
+    let availableRoles = [...commonLocation.roles];
     
-    // For display purposes, show "Everyone is a spy!" instead of individual locations
-    // But we still need the locations array for the spy case display logic
-    const displayLocations = gameLocations.filter(loc => loc.name !== "spy");
-    
-    return {
-      playerInfo,
-      commonLocation,
-      availableLocations: displayLocations.sort((a, b) => a.name.localeCompare(b.name))
-    };
+    // Loop through each player to assign them locations and roles
+    for (let i = 0; i < numPlayers; i++) {
+      // Skip if this player is the spy
+      if (i === spyIndex) {
+        playerInfo[i] = { location: "spy", role: "spy" };
+        continue;
+      }
+      
+      // If all roles have been assigned at least once, refill the available roles array
+      if (availableRoles.length === 0) {
+        availableRoles = [...commonLocation.roles];
+      }
+      
+      // Randomly select a role from the available roles array
+      const roleIndex = Math.floor(Math.random() * availableRoles.length);
+      const selectedRole = availableRoles.splice(roleIndex, 1)[0];
+      
+      // Assign the selected location and role to the current player
+      playerInfo[i] = { location: commonLocation.name, role: selectedRole };
+    }
   }
   
-  // Normal game: randomly select which player will be the spy
-  const spyIndex = Math.floor(Math.random() * numPlayers);
-  
-  // Make a shallow copy of the roles for the selected location
-  let availableRoles = [...commonLocation.roles];
-  
-  // Loop through each player to assign them locations and roles
-  for (let i = 0; i < numPlayers; i++) {
-    // Skip if this player is the spy
-    if (i === spyIndex) {
-      playerInfo[i] = { location: "spy", role: "spy" };
-      continue;
-    }
-    
-    // If all roles have been assigned at least once, refill the available roles array
-    if (availableRoles.length === 0) {
-      availableRoles = [...commonLocation.roles];
-    }
-    
-    // Randomly select a role from the available roles array
-    const roleIndex = Math.floor(Math.random() * availableRoles.length);
-    const selectedRole = availableRoles.splice(roleIndex, 1)[0];
-    
-    // Assign the selected location and role to the current player
-    playerInfo[i] = { location: commonLocation.name, role: selectedRole };
-  }
-  
-  // Remove the selected location from the master locations array to prevent reuse in future games
+  // AFTER creating display list and assigning roles, remove the selected location 
+  // from gameLocations to prevent reuse in future games
   gameLocations.splice(randomLocationIndex, 1);
-  
-  // Create display list: includes current location + remaining locations, sorted alphabetically
-  const displayLocations = [...availableLocationsForDisplay.filter(loc => loc.name !== "spy")];
   
   return {
     playerInfo,
@@ -167,6 +153,14 @@ export function resetLocations() {
 }
 
 /**
+ * Debug function to see current available locations
+ * This helps debug the location removal logic
+ */
+export function getAvailableLocations() {
+  return gameLocations.map(loc => loc.name === "spy" ? "Everyone is spy!" : loc.name);
+}
+
+/**
  * Generates a string of all available locations for display
  * Converted from the original updateLocationsString function
  * Handles the special "spy" location case like your original Code.org version
@@ -175,13 +169,13 @@ export function resetLocations() {
  * @returns Formatted string of location names
  */
 export function generateLocationsString(locations: Location[], commonLocation?: Location): string {
-  // Check if this is the special "everyone is spy" game mode
-  if (commonLocation && commonLocation.name === "spy") {
-    return "Everyone is a spy!";
-  }
+  // Always return all locations sorted alphabetically, with "spy" renamed to "Everyone is spy!"
+  // Even in "everyone is spy" mode, we show all available locations
+  const displayNames = locations.map(location => 
+    location.name === "spy" ? "Everyone is spy!" : location.name
+  );
   
-  // Normal case: return all locations sorted alphabetically
-  return locations.map(location => location.name).join('\n');
+  return displayNames.sort().join('\n');
 }
 
 /**
