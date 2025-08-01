@@ -14,7 +14,7 @@ import {
 } from '../utils/gameLogic';
 
 // Define the different screens/states of the game
-type GameScreen = 'home' | 'howToPlay' | 'setup' | 'playerReveal' | 'gameEnd';
+type GameScreen = 'home' | 'howToPlay' | 'setup' | 'nextScreen' | 'playerReveal' | 'gameEnd';
 
 const SpyfallGame: React.FC = () => {
   // Game state variables (converted from your original global variables)
@@ -72,18 +72,42 @@ const SpyfallGame: React.FC = () => {
     // Reset player reveal index
     setCurrentPlayerIndex(0);
     
-    // Move to player reveal screen
+    // Move to intermediate screen first (like your original nextScreen)
     playSuccessSound();
+    setCurrentScreen('nextScreen');
+  };
+
+  // Function to go from nextScreen to first player reveal
+  const startPlayerReveals = () => {
+    playClickSound();
     setCurrentScreen('playerReveal');
   };
 
-  // Reveal next player (converted from your nextButton click event)
+  // Function to go back to nextScreen after viewing a role (and increment player)
+  const goToNextScreen = () => {
+    playClickSound();
+    
+    // Check if this was the last player
+    if (currentPlayerIndex >= playerInfo.length - 1) {
+      // All players have seen their roles, start the game!
+      const questions = generateHelperQuestions();
+      setHelperQuestions(questions);
+      setCurrentScreen('gameEnd');
+    } else {
+      // Move to next player and go to intermediate screen
+      setCurrentPlayerIndex(currentPlayerIndex + 1);
+      setCurrentScreen('nextScreen');
+    }
+  };
+
+  // This function is no longer needed since goToNextScreen handles everything
   const revealNextPlayer = () => {
     playClickSound();
     
     // If there are more players to reveal
     if (currentPlayerIndex < playerInfo.length - 1) {
       setCurrentPlayerIndex(currentPlayerIndex + 1);
+      setCurrentScreen('nextScreen'); // Go to intermediate screen between players
     } else {
       // All players revealed, generate helper questions and go to end screen
       const questions = generateHelperQuestions();
@@ -222,6 +246,84 @@ const SpyfallGame: React.FC = () => {
     </div>
   );
 
+  // NEXT SCREEN COMPONENT - Intermediate screen to prevent players from seeing each other's roles
+  const NextScreen = () => {
+    const isFirstPlayer = currentPlayerIndex === 0;
+    const isLastPlayer = currentPlayerIndex >= playerInfo.length - 1;
+    
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="game-card max-w-md w-full text-center">
+          <div className="text-6xl mb-6">🔄</div>
+          
+          {isFirstPlayer ? (
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold text-gray-800">Ready to Start!</h2>
+              <p className="text-lg text-gray-600">
+                Roles have been assigned to all {numPlayers} players.
+              </p>
+              <p className="text-gray-600">
+                Player 1, you're up first! Click the button below to see your role.
+              </p>
+            </div>
+          ) : !isLastPlayer ? (
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold text-gray-800">Pass the Device!</h2>
+              <p className="text-lg text-gray-600">
+                Hand the device to Player {currentPlayerIndex + 1}
+              </p>
+              <p className="text-gray-600">
+                Make sure the previous player can't see the screen, then click below to reveal the next role.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold text-gray-800">Final Player!</h2>
+              <p className="text-lg text-gray-600">
+                Hand the device to Player {currentPlayerIndex + 1} (the last player)
+              </p>
+              <p className="text-gray-600">
+                After they see their role, you'll start the game!
+              </p>
+            </div>
+          )}
+          
+          <button
+            onClick={startPlayerReveals}
+            className="game-button w-full mt-8"
+          >
+            {isFirstPlayer ? '👀 SEE MY ROLE' : `👀 REVEAL PLAYER ${currentPlayerIndex + 1}`}
+          </button>
+          
+          <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-sm text-gray-700">
+              <strong>🔒 Privacy Notice:</strong> This screen prevents players from accidentally seeing each other's roles when passing the device.
+            </p>
+          </div>
+          
+          {/* Show locations for reference */}
+          {availableLocations.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-2 text-gray-700">📍 Possible Locations</h3>
+              <div 
+                className="bg-gray-50 rounded-lg p-3 text-xs cursor-pointer hover:bg-gray-100 transition-colors max-h-32 overflow-y-auto"
+                onClick={speakLocations}
+                title="Click to hear locations read aloud"
+              >
+                <div className="text-gray-600">
+                  {generateLocationsString(availableLocations)}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  🔊 Click to hear locations
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   // PLAYER REVEAL SCREEN COMPONENT
   const PlayerRevealScreen = () => {
     const currentPlayer = getCurrentPlayer();
@@ -273,14 +375,14 @@ const SpyfallGame: React.FC = () => {
           )}
           
           <button
-            onClick={revealNextPlayer}
+            onClick={goToNextScreen}
             className="game-button w-full mt-8"
           >
-            {isLastPlayer ? '🎯 START PLAYING!' : '➡️ NEXT PLAYER'}
+            ✅ I'VE SEEN MY ROLE
           </button>
           
           <div className="mt-4 text-sm text-gray-600">
-            Pass the device to the next player before clicking!
+            Remember your role, then click to pass the device!
           </div>
         </div>
       </div>
@@ -358,6 +460,7 @@ const SpyfallGame: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-900 to-purple-900">
       {currentScreen === 'home' && <HomeScreen />}
       {currentScreen === 'howToPlay' && <HowToPlayScreen />}
+      {currentScreen === 'nextScreen' && <NextScreen />}
       {currentScreen === 'playerReveal' && <PlayerRevealScreen />}
       {currentScreen === 'gameEnd' && <GameEndScreen />}
     </div>
