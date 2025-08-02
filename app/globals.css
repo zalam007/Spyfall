@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom game styling */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+  }
+}
+
+@layer components {
+  .game-button {
+    @apply bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 
+           text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition-all 
+           duration-200 hover:scale-105 active:scale-95 cursor-pointer;
+  }
+  
+  .game-button-secondary {
+    @apply bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg 
+           shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer;
+  }
+  
+  .game-card {
+    @apply bg-white/90 backdrop-blur-sm rounded-xl shadow-xl p-8 border border-white/20;
+  }
+  
+  .spy-card {
+    @apply bg-red-600/90 backdrop-blur-sm rounded-xl shadow-xl p-8 border border-red-400/20 text-white;
+  }
+}
