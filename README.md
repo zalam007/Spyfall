@@ -12,34 +12,6 @@ A modern web-based version of the popular party game Spyfall, built with Next.js
    - **Spy wins** if they correctly guess the location
    - **Everyone else wins** if they identify the spy
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js (version 16 or higher)
-- npm or yarn package manager
-
-### Installation
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
-3. **Open your browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-### Building for Production
-
-```bash
-npm run build
-npm start
-```
-
 ## 🎯 Features
 
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
@@ -48,39 +20,13 @@ npm start
 - **Text-to-Speech**: Click to hear location lists read aloud (where supported)
 - **Modern UI**: Clean, intuitive interface with smooth animations
 
-## 🗺️ Available Locations
-
-- Casino
-- Bank  
-- Prison
-- Castle
-- The Pyramids
-- China
-- The White House
-- Agora Hills
-- Zami's house
-- Disneyland
-- High-School
-- Ship
-- Costco
-- Funeral
-- Wedding
 
 ## 🔧 Tech Stack
 
 - **Framework**: Next.js 14
 - **Frontend**: React 18 with TypeScript
 - **Styling**: Tailwind CSS
-- **Speech**: Web Speech API (where supported)
 
 ## 📱 Mobile-Friendly
 
 The game is fully responsive and works great on phones and tablets, making it perfect for parties and gatherings!
-
-## 🎨 Original Inspiration
-
-This project was converted from a Code.org App Lab implementation to a modern web application, maintaining all the original game logic while adding a professional UI and modern web features.
-
-## 📝 License
-
-This project is open source and available under the MIT License.
