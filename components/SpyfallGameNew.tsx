@@ -1,39 +1,39 @@
 /**
  * Main Spyfall Game Component
- * 
+ *
  * This is the main orchestrator component that manages the overall game flow.
  * It uses the custom useSpyfallGame hook for state management and renders
  * the appropriate screen component based on the current game state.
- * 
+ *
  * ARCHITECTURE OVERVIEW:
  * =====================
- * 
+ *
  * This component follows a clean separation of concerns:
- * 
+ *
  * 1. STATE MANAGEMENT: All game logic is handled by the useSpyfallGame hook
  * 2. SCREEN RENDERING: Each game screen is a separate, focused component
  * 3. EVENT HANDLING: Events are passed down to child components via props
  * 4. DATA FLOW: Unidirectional data flow from hook → main component → screen components
- * 
+ *
  * ORIGINAL CODE.ORG CONVERSION:
  * ============================
- * 
+ *
  * Your original Code.org code had everything in one large function with global variables.
  * This new structure breaks that down into:
- * 
+ *
  * - Hook: Manages state and game logic (useSpyfallGame)
  * - Main Component: Handles screen routing (this file)
  * - Screen Components: Handle specific UI for each game phase
  * - Utils: Pure functions for game logic and sound effects
  * - Types: TypeScript definitions for type safety
- * 
+ *
  * This makes the code much more maintainable, testable, and easier to understand!
  */
 
-'use client';
+"use client";
 
-import React from 'react';
-import { useSpyfallGame } from '../hooks/useSpyfallGame';
+import React from "react";
+import { useSpyfallGame } from "../hooks/useSpyfallGame";
 
 // Import all screen components using the index file for cleaner imports
 import {
@@ -41,16 +41,16 @@ import {
   HowToPlayScreen,
   NextScreen,
   PlayerRevealScreen,
-  GameEndScreen
-} from './screens';
+  GameEndScreen,
+} from "./screens";
 
 /**
  * Main Spyfall Game Component
- * 
+ *
  * This component acts as the "router" for the game, deciding which screen
  * to show based on the current game state. It connects the game logic hook
  * with the appropriate UI components.
- * 
+ *
  * The component is much simpler than the original because all the complex
  * logic has been moved to the custom hook and individual screen components.
  */
@@ -62,25 +62,25 @@ const SpyfallGame: React.FC = () => {
   const {
     // Game state
     gameState,
-    
+
     // Navigation functions
     goToScreen,
-    
+
     // Game setup functions
     handlePlayerInputChange,
     startGame,
     showError,
-    
+
     // Player reveal functions
     startPlayerReveal,
     getCurrentPlayer,
     getCurrentPlayerNumber,
     goToNextPlayer,
-    
+
     // Game management functions
     resetAllLocations,
     startNewGame,
-    
+
     // Audio functions
     speakLocations,
   } = useSpyfallGame();
@@ -88,19 +88,19 @@ const SpyfallGame: React.FC = () => {
   // ===== SCREEN RENDERING =====
   /**
    * Render the appropriate screen based on current game state
-   * 
+   *
    * This replaces the large conditional rendering logic from the original
    * component with a clean, easy-to-understand screen routing system.
-   * 
+   *
    * Each screen is a separate component that receives only the props it needs,
    * making the code more modular and easier to test.
    */
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 to-purple-900">
       {/* === HOME SCREEN === */}
       {/* Main menu where players enter the number of participants */}
-      {gameState.currentScreen === 'home' && (
+      {gameState.currentScreen === "home" && (
         <HomeScreen
           gameState={gameState}
           onScreenChange={goToScreen}
@@ -113,7 +113,7 @@ const SpyfallGame: React.FC = () => {
 
       {/* === HOW TO PLAY SCREEN === */}
       {/* Instructions and rules for new players */}
-      {gameState.currentScreen === 'howToPlay' && (
+      {gameState.currentScreen === "howToPlay" && (
         <HowToPlayScreen
           gameState={gameState}
           onScreenChange={goToScreen}
@@ -123,7 +123,7 @@ const SpyfallGame: React.FC = () => {
 
       {/* === NEXT SCREEN === */}
       {/* Privacy transition screen between players during role reveal */}
-      {gameState.currentScreen === 'nextScreen' && (
+      {gameState.currentScreen === "nextScreen" && (
         <NextScreen
           gameState={gameState}
           onScreenChange={goToScreen}
@@ -135,7 +135,7 @@ const SpyfallGame: React.FC = () => {
 
       {/* === PLAYER REVEAL SCREEN === */}
       {/* Shows each player their location and role */}
-      {gameState.currentScreen === 'playerReveal' && (
+      {gameState.currentScreen === "playerReveal" && (
         <PlayerRevealScreen
           gameState={gameState}
           onScreenChange={goToScreen}
@@ -147,7 +147,7 @@ const SpyfallGame: React.FC = () => {
 
       {/* === GAME END SCREEN === */}
       {/* Main gameplay interface with locations and questions */}
-      {gameState.currentScreen === 'gameEnd' && (
+      {gameState.currentScreen === "gameEnd" && (
         <GameEndScreen
           gameState={gameState}
           onScreenChange={goToScreen}
