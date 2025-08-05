@@ -52,9 +52,9 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 pb-8">
       {/* === CARD CONTAINER WITH FLIP ANIMATION === */}
-      <div className="perspective-1000 max-w-md w-full">
+      <div className="perspective-1000 max-w-md w-full -mt-8">
         <div
           className={`card-flip-container ${isFlipped ? 'flipped' : ''} cursor-pointer`}
           onClick={handleCardFlip}
@@ -183,7 +183,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
       </div>
 
       {/* === CONFIRMATION BUTTON (Outside the card) === */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2">
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
         <button onClick={onNextPlayer} className="game-button px-12 py-3 whitespace-nowrap">
           {isSpy ? "✅ I UNDERSTAND" : "✅ I'VE SEEN MY LOCATION"}
         </button>
@@ -215,7 +215,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
           display: flex;
           flex-direction: column;
           justify-content: center;
-          padding: 2rem;
+          padding: 1.5rem;
           box-sizing: border-box;
         }
 
