@@ -37,15 +37,16 @@ export interface PlayerInfo {
  * Defines the different screens/states the game can be in
  * 
  * The game flow is:
- * home → howToPlay (optional) → nextScreen → playerReveal → gameEnd
+ * home → howToPlay (optional) → settings → nextScreen → playerReveal → gameEnd
  * 
  * - home: Main menu where players enter number of participants
  * - howToPlay: Instructions screen (accessed from home)
+ * - settings: Game settings and preferences
  * - nextScreen: Transition screen between players during role reveals
  * - playerReveal: Shows each player their location and role
  * - gameEnd: Main game screen with questions and possible locations
  */
-export type GameScreen = 'home' | 'howToPlay' | 'nextScreen' | 'playerReveal' | 'gameEnd';
+export type GameScreen = 'home' | 'howToPlay' | 'settings' | 'nextScreen' | 'playerReveal' | 'gameEnd';
 
 // ===== GAME STATE TYPE =====
 
@@ -58,6 +59,11 @@ export type GameScreen = 'home' | 'howToPlay' | 'nextScreen' | 'playerReveal' | 
 export interface GameState {
   // === UI State ===
   currentScreen: GameScreen;        // Which screen is currently displayed
+  isCurrentlySpeaking: boolean;     // Whether text-to-speech is currently playing
+  
+  // === Game Settings ===
+  removeLocationAfterPlay: boolean; // Whether to remove locations after they're played
+  everyoneSpyEnabled: boolean;      // Whether "Everyone is spy" mode is available
   
   // === Game Setup ===
   numPlayers: number;               // Total number of players in the game
@@ -90,7 +96,6 @@ export interface BaseScreenProps {
  */
 export interface HomeScreenProps extends BaseScreenProps {
   onStartGame: () => void;
-  onResetLocations: () => void;
   onPlayerInputChange: (value: string) => void;
 }
 
@@ -100,6 +105,20 @@ export interface HomeScreenProps extends BaseScreenProps {
 export interface PlayerRevealScreenProps extends BaseScreenProps {
   onNextPlayer: () => void;
   getCurrentPlayer: () => PlayerInfo | null;
+}
+
+/**
+ * Props for the Settings screen component
+ */
+export interface SettingsScreenProps extends BaseScreenProps {
+  onResetAllLocations: () => void;
+  onToggleRemoveLocationAfterPlay: (enabled: boolean) => void;
+  onToggleEveryoneSpy: (enabled: boolean) => void;
+  onAddLocation: (name: string, roles: string[]) => boolean;
+  onRemoveLocation: (name: string) => void;
+  onRestoreLocation: (name: string) => void;
+  getAvailableLocations: () => string[];
+  getPlayedLocations: () => string[];
 }
 
 /**

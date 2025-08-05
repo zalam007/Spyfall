@@ -13,23 +13,23 @@ export interface PlayerInfo {
 }
 
 // Master list of locations with corresponding roles
-// This is the same data from your original Code.org project
+// This is the same data from your original Code.org project, sorted alphabetically
 export const LOCATIONS: Location[] = [
-  { name: "Casino", roles: ["Gambler", "Dealer", "Bartender", "Security", "Entertainer"] },
-  { name: "Bank", roles: ["Banker", "Robber", "Security Guard", "Customer", "Manager"] },
-  { name: "Prison", roles: ["Warden", "Guard", "Prisoner", "Escapee", "Cook"] },
-  { name: "Castle", roles: ["King", "Queen", "Knight", "Maid", "Cook"] },
-  { name: "The Pyramids", roles: ["Pharaoh", "Priest", "Explorer", "Archaeologist", "Tourist"] },
-  { name: "China", roles: ["Emperor", "Philosopher", "Monk", "Merchant", "Invader"] },
-  { name: "The White House", roles: ["President", "First Lady", "Secret Service Agent", "Reporter", "Intern"] },
   { name: "Agora Hills", roles: ["Resident", "Mayor", "Teacher", "Firefighter", "Celebrity"] },
-  { name: "Zami's house", roles: ["Zami", "Sibling", "Parent", "Poolman", "Mailman"] },
-  { name: "Disneyland", roles: ["Tourist", "Janitor", "Princess", "Ride Operator", "Mickey"] },
-  { name: "High-School", roles: ["Principal", "Teacher", "Student", "Custodian", "Athlete", "Nerd"] },
-  { name: "Ship", roles: ["Captain", "Navigator", "Prisoner", "Cleaner", "Chef"] },
+  { name: "Bank", roles: ["Banker", "Robber", "Security Guard", "Customer", "Manager"] },
+  { name: "Casino", roles: ["Gambler", "Dealer", "Bartender", "Security", "Entertainer"] },
+  { name: "Castle", roles: ["King", "Queen", "Knight", "Maid", "Cook"] },
+  { name: "China", roles: ["Emperor", "Philosopher", "Monk", "Merchant", "Invader"] },
   { name: "Costco", roles: ["Customer", "Cashier", "Stocker", "Manager", "Sample Giver"] },
+  { name: "Disneyland", roles: ["Tourist", "Janitor", "Princess", "Ride Operator", "Mickey"] },
   { name: "Funeral", roles: ["Priest", "Family Member", "Friend", "Long Time Enemy", "Gravedigger"] },
+  { name: "High-School", roles: ["Principal", "Teacher", "Student", "Custodian", "Athlete", "Nerd"] },
+  { name: "Prison", roles: ["Warden", "Guard", "Prisoner", "Escapee", "Cook"] },
+  { name: "Ship", roles: ["Captain", "Navigator", "Prisoner", "Cleaner", "Chef"] },
+  { name: "The Pyramids", roles: ["Pharaoh", "Priest", "Explorer", "Archaeologist", "Tourist"] },
+  { name: "The White House", roles: ["President", "First Lady", "Secret Service Agent", "Reporter", "Intern"] },
   { name: "Wedding", roles: ["Bride", "Groom", "Bridesmaid", "Groomsman", "Officiant"] },
+  { name: "Zami's house", roles: ["Zami", "Sibling", "Parent", "Poolman", "Mailman"] },
   { name: "spy", roles: ["spy"] }
 ];
 
@@ -83,9 +83,10 @@ let gameLocations = [...LOCATIONS];
  * Converted from the original assignPlayerLocationsAndRoles function
  * This matches your Code.org logic exactly
  * @param numPlayers - Number of players in the game
+ * @param removeLocationAfterPlay - Whether to remove location from pool after using it
  * @returns Object containing player info, common location, and available locations
  */
-export function assignPlayerLocationsAndRoles(numPlayers: number) {
+export function assignPlayerLocationsAndRoles(numPlayers: number, removeLocationAfterPlay: boolean = true) {
   // Initialize array to store each player's assigned location and role
   const playerInfo: PlayerInfo[] = [];
   
@@ -133,9 +134,11 @@ export function assignPlayerLocationsAndRoles(numPlayers: number) {
     }
   }
   
-  // AFTER creating display list and assigning roles, remove the selected location 
-  // from gameLocations to prevent reuse in future games
-  gameLocations.splice(randomLocationIndex, 1);
+  // AFTER creating display list and assigning roles, conditionally remove the selected location 
+  // from gameLocations to prevent reuse in future games (only if setting is enabled)
+  if (removeLocationAfterPlay) {
+    gameLocations.splice(randomLocationIndex, 1);
+  }
   
   return {
     playerInfo,
@@ -154,10 +157,93 @@ export function resetLocations() {
 
 /**
  * Debug function to see current available locations
+ * Returns sorted list for consistent UI presentation
  * This helps debug the location removal logic
  */
 export function getAvailableLocations() {
-  return gameLocations.map(loc => loc.name === "spy" ? "Everyone is spy!" : loc.name);
+  return gameLocations.map(loc => loc.name === "spy" ? "Everyone is spy!" : loc.name).sort();
+}
+
+/**
+ * Get all original locations (including those that have been played)
+ */
+export function getAllLocations() {
+  return LOCATIONS.map(loc => loc.name === "spy" ? "Everyone is spy!" : loc.name).sort();
+}
+
+/**
+ * Get played locations (those not in current gameLocations)
+ */
+export function getPlayedLocations() {
+  const availableNames = gameLocations.map(loc => loc.name);
+  return LOCATIONS.filter(loc => !availableNames.includes(loc.name))
+    .map(loc => loc.name === "spy" ? "Everyone is spy!" : loc.name)
+    .sort();
+}
+
+/**
+ * Check if "Everyone is spy" mode is enabled
+ */
+export function isEveryoneSpyEnabled() {
+  return gameLocations.some(loc => loc.name === "spy");
+}
+
+/**
+ * Toggle "Everyone is spy" mode
+ */
+export function toggleEveryoneSpy(enabled: boolean) {
+  const spyLocationIndex = gameLocations.findIndex(loc => loc.name === "spy");
+  const originalSpyLocationIndex = LOCATIONS.findIndex(loc => loc.name === "spy");
+  
+  if (enabled && spyLocationIndex === -1) {
+    // Add spy location if not present
+    gameLocations.push(LOCATIONS[originalSpyLocationIndex]);
+  } else if (!enabled && spyLocationIndex !== -1) {
+    // Remove spy location if present
+    gameLocations.splice(spyLocationIndex, 1);
+  }
+}
+
+/**
+ * Add a custom location to the game
+ */
+export function addLocation(name: string, roles: string[]) {
+  // Check if location already exists
+  const exists = gameLocations.some(loc => loc.name.toLowerCase() === name.toLowerCase());
+  if (!exists) {
+    gameLocations.push({ name, roles });
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Remove a location from the game
+ */
+export function removeLocation(name: string) {
+  const index = gameLocations.findIndex(loc => loc.name === name);
+  if (index !== -1) {
+    gameLocations.splice(index, 1);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Restore a played location back to available locations
+ */
+export function restoreLocation(name: string) {
+  const originalLocation = LOCATIONS.find(loc => 
+    (loc.name === "spy" ? "Everyone is spy!" : loc.name) === name
+  );
+  if (originalLocation) {
+    const exists = gameLocations.some(loc => loc.name === originalLocation.name);
+    if (!exists) {
+      gameLocations.push(originalLocation);
+      return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -251,4 +337,14 @@ export function stopSpeech(): void {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }
+}
+
+/**
+ * Checks if speech synthesis is currently speaking
+ */
+export function isSpeaking(): boolean {
+  if ('speechSynthesis' in window) {
+    return window.speechSynthesis.speaking;
+  }
+  return false;
 }

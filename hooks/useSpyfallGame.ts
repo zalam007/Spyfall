@@ -15,6 +15,13 @@ import {
   generateHelperQuestions,
   resetLocations,
   getAvailableLocations,
+  getPlayedLocations,
+  getAllLocations,
+  isEveryoneSpyEnabled,
+  toggleEveryoneSpy,
+  addLocation,
+  removeLocation,
+  restoreLocation,
   speakText,
   stopSpeech,
   generateLocationsString
@@ -47,6 +54,11 @@ export function useSpyfallGame() {
   const [gameState, setGameState] = useState<GameState>({
     // UI State - tracks which screen is currently shown
     currentScreen: 'home',
+    isCurrentlySpeaking: false,
+    
+    // Game Settings - user preferences
+    removeLocationAfterPlay: true, // Default to removing locations after play
+    everyoneSpyEnabled: true, // Default to enabling "Everyone is spy" mode
     
     // Game Setup - configuration for the current game
     numPlayers: 0,
@@ -149,7 +161,7 @@ export function useSpyfallGame() {
     // Use the original game logic to assign locations and roles
     console.log('🎲 Available locations before game:', getAvailableLocations());
     
-    const gameData = assignPlayerLocationsAndRoles(players);
+    const gameData = assignPlayerLocationsAndRoles(players, gameState.removeLocationAfterPlay);
     
     // Debug logging (matches original Code.org debugging)
     console.log('🎯 Selected location:', gameData.commonLocation.name);
@@ -239,6 +251,74 @@ export function useSpyfallGame() {
 
   // ===== GAME MANAGEMENT FUNCTIONS =====
   /**
+   * Toggle the "remove location after play" setting
+   * 
+   * @param enabled - Whether to remove locations after they're played
+   */
+  const toggleRemoveLocationAfterPlay = (enabled: boolean) => {
+    setGameState(prev => ({
+      ...prev,
+      removeLocationAfterPlay: enabled
+    }));
+  };
+
+  /**
+   * Toggle the "everyone is spy" setting
+   * 
+   * @param enabled - Whether to enable "Everyone is spy" mode
+   */
+  const toggleEveryoneSpyMode = (enabled: boolean) => {
+    toggleEveryoneSpy(enabled);
+    setGameState(prev => ({
+      ...prev,
+      everyoneSpyEnabled: enabled
+    }));
+  };
+
+  /**
+   * Add a custom location
+   * 
+   * @param name - Name of the location
+   * @param roles - Array of roles for this location
+   * @returns Whether the location was successfully added
+   */
+  const addCustomLocation = (name: string, roles: string[]): boolean => {
+    return addLocation(name, roles);
+  };
+
+  /**
+   * Remove a location from available locations
+   * 
+   * @param name - Name of the location to remove
+   */
+  const removeCustomLocation = (name: string) => {
+    removeLocation(name);
+  };
+
+  /**
+   * Restore a played location back to available
+   * 
+   * @param name - Name of the location to restore
+   */
+  const restorePlayedLocation = (name: string) => {
+    restoreLocation(name);
+  };
+
+  /**
+   * Get current available locations
+   */
+  const getCurrentAvailableLocations = (): string[] => {
+    return getAvailableLocations();
+  };
+
+  /**
+   * Get played locations (unavailable)
+   */
+  const getCurrentPlayedLocations = (): string[] => {
+    return getPlayedLocations();
+  };
+
+  /**
    * Reset all locations back to the original set
    * 
    * This is for completely fresh sessions where you want to play
@@ -256,16 +336,19 @@ export function useSpyfallGame() {
    * This resets the game state back to the home screen but does NOT
    * reset the location pool (locations used in previous games stay removed).
    * This matches the original Code.org behavior.
+   * 
+   * NOTE: User settings (like removeLocationAfterPlay) are preserved.
    */
   const startNewGame = () => {
     stopSpeech(); // Stop any currently playing speech
     playNewGame(); // Play new game sound
     
-    // Reset all game state back to initial values
-    // NOTE: We deliberately do NOT call resetLocations() here
-    // because locations should stay removed between games
-    setGameState({
+    // Reset game state but preserve user settings
+    setGameState(prev => ({
       currentScreen: 'home',
+      isCurrentlySpeaking: false,
+      removeLocationAfterPlay: prev.removeLocationAfterPlay, // Preserve user setting
+      everyoneSpyEnabled: prev.everyoneSpyEnabled, // Preserve user setting
       numPlayers: 0,
       playerInputValue: '',
       errorMessage: '',
@@ -274,7 +357,7 @@ export function useSpyfallGame() {
       availableLocations: [],
       helperQuestions: '',
       currentPlayerIndex: 0,
-    });
+    }));
   };
 
   // ===== TEXT-TO-SPEECH FUNCTIONS =====
@@ -283,20 +366,48 @@ export function useSpyfallGame() {
    * 
    * This uses the Web Speech API to read the locations to players.
    * Useful during the main game when players need to hear all possible locations.
+   * Can be toggled on/off - if currently speaking, it will stop; if not speaking, it will start.
    */
   const speakLocations = () => {
-    stopSpeech(); // Stop any currently playing speech
-    
-    if (gameState.availableLocations.length > 0) {
-      // Generate the locations string and convert to speech-friendly format
-      const locationsText = generateLocationsString(
-        gameState.availableLocations, 
-        gameState.commonLocation || undefined
-      );
+    if (gameState.isCurrentlySpeaking) {
+      // If currently speaking, stop the speech
+      stopSpeech();
+      setGameState(prev => ({ ...prev, isCurrentlySpeaking: false }));
+    } else {
+      // If not speaking, start speaking
+      stopSpeech(); // Ensure any previous speech is stopped
       
-      // Replace newlines with commas for better speech flow
-      const speechText = locationsText.replace(/\n/g, ', ');
-      speakText(speechText, 'female', 'English');
+      if (gameState.availableLocations.length > 0) {
+        // Generate the locations string and convert to speech-friendly format
+        const locationsText = generateLocationsString(
+          gameState.availableLocations, 
+          gameState.commonLocation || undefined
+        );
+        
+        // Replace newlines with commas for better speech flow
+        const speechText = locationsText.replace(/\n/g, ', ');
+        
+        // Set speaking state
+        setGameState(prev => ({ ...prev, isCurrentlySpeaking: true }));
+        
+        // Create utterance with event handlers
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(speechText);
+          utterance.rate = 1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          
+          // Set up event handlers
+          utterance.onend = () => {
+            setGameState(prev => ({ ...prev, isCurrentlySpeaking: false }));
+          };
+          utterance.onerror = () => {
+            setGameState(prev => ({ ...prev, isCurrentlySpeaking: false }));
+          };
+          
+          window.speechSynthesis.speak(utterance);
+        }
+      }
     }
   };
 
@@ -328,6 +439,13 @@ export function useSpyfallGame() {
     // === GAME MANAGEMENT ===
     resetAllLocations,
     startNewGame,
+    toggleRemoveLocationAfterPlay,
+    toggleEveryoneSpyMode,
+    addCustomLocation,
+    removeCustomLocation,
+    restorePlayedLocation,
+    getCurrentAvailableLocations,
+    getCurrentPlayedLocations,
     
     // === AUDIO ===
     speakLocations,

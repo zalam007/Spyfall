@@ -14,15 +14,15 @@
  * including the different messages for first player, middle players, and final player.
  */
 
-import React from 'react';
-import type { NextScreenProps } from '../../types';
+import React from "react";
+import type { NextScreenProps } from "../../types";
 
 /**
  * Next Screen Component
- * 
+ *
  * Privacy transition screen that appears before each player sees their role.
  * Shows different messages based on whether it's the first, middle, or last player.
- * 
+ *
  * @param props - Contains game state and event handlers
  */
 const NextScreen: React.FC<NextScreenProps> = ({
@@ -32,7 +32,8 @@ const NextScreen: React.FC<NextScreenProps> = ({
 }) => {
   // Calculate player position for conditional messaging
   const isFirstPlayer = gameState.currentPlayerIndex === 0;
-  const isLastPlayer = gameState.currentPlayerIndex === gameState.playerInfo.length - 1;
+  const isLastPlayer =
+    gameState.currentPlayerIndex === gameState.playerInfo.length - 1;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -43,14 +44,16 @@ const NextScreen: React.FC<NextScreenProps> = ({
         {/* === CONDITIONAL MESSAGING === */}
         {isFirstPlayer ? (
           <div className="space-y-4">
-            <h2 className="text-3xl font-bold text-gray-800">Ready to Start!</h2>
-            <p className="text-gray-600">
-              Player 1, you're up first!
-            </p>
+            <h2 className="text-3xl font-bold text-gray-800">
+              Ready to Start!
+            </h2>
+            <p className="text-gray-600">Player 1, you're up first!</p>
           </div>
         ) : !isLastPlayer ? (
           <div className="space-y-4">
-            <h2 className="text-3xl font-bold text-gray-800">Pass the Device!</h2>
+            <h2 className="text-3xl font-bold text-gray-800">
+              Pass the Device!
+            </h2>
             <p className="text-lg text-gray-600">
               Hand the device to Player {gameState.currentPlayerIndex + 1}
             </p>
@@ -59,7 +62,8 @@ const NextScreen: React.FC<NextScreenProps> = ({
           <div className="space-y-4">
             <h2 className="text-3xl font-bold text-gray-800">Final Player!</h2>
             <p className="text-lg text-gray-600">
-              Hand the device to Player {gameState.currentPlayerIndex + 1} (the last player)
+              Hand the device to Player {gameState.currentPlayerIndex + 1} (the
+              last player)
             </p>
           </div>
         )}
@@ -70,7 +74,7 @@ const NextScreen: React.FC<NextScreenProps> = ({
           className="game-button w-full mt-8"
         >
           {isFirstPlayer
-            ? '👀 SEE MY LOCATION'
+            ? "👀 SEE MY LOCATION"
             : `👀 REVEAL PLAYER ${gameState.currentPlayerIndex + 1}`}
         </button>
       </div>
