@@ -99,14 +99,16 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
                       {currentPlayer.location}
                     </p>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-600">
-                      YOUR ROLE:
-                    </h3>
-                    <p className="text-2xl font-bold text-green-600">
-                      {currentPlayer.role}
-                    </p>
-                  </div>
+                  {gameState.rolesEnabled && (
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-600">
+                        YOUR ROLE:
+                      </h3>
+                      <p className="text-2xl font-bold text-green-600">
+                        {currentPlayer.role}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -149,8 +151,8 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
                 </div>
               </div>
 
-              {/* Roles - only show for non-spy players */}
-              {!isSpy && gameState.commonLocation && (
+              {/* Roles - only show for non-spy players and when roles are enabled */}
+              {!isSpy && gameState.rolesEnabled && gameState.commonLocation && (
                 <div className="border-t border-gray-300 pt-3">
                   <h3 className="text-sm font-semibold text-gray-600 mb-2">
                     Possible Roles at {gameState.commonLocation.name}:

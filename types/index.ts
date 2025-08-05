@@ -64,6 +64,7 @@ export interface GameState {
   // === Game Settings ===
   removeLocationAfterPlay: boolean; // Whether to remove locations after they're played
   everyoneSpyEnabled: boolean;      // Whether "Everyone is spy" mode is available
+  rolesEnabled: boolean;            // Whether to show roles in the game (default: true)
   
   // === Game Setup ===
   numPlayers: number;               // Total number of players in the game
@@ -114,6 +115,7 @@ export interface SettingsScreenProps extends BaseScreenProps {
   onResetAllLocations: () => void;
   onToggleRemoveLocationAfterPlay: (enabled: boolean) => void;
   onToggleEveryoneSpy: (enabled: boolean) => void;
+  onToggleRoles: (enabled: boolean) => void;
   onAddLocation: (name: string, roles: string[]) => boolean;
   onRemoveLocation: (name: string) => void;
   onRestoreLocation: (name: string) => void;

@@ -83,6 +83,7 @@ const SpyfallGame: React.FC = () => {
     startNewGame,
     toggleRemoveLocationAfterPlay,
     toggleEveryoneSpyMode,
+    toggleRolesMode,
     addCustomLocation,
     removeCustomLocation,
     restorePlayedLocation,
@@ -141,6 +142,7 @@ const SpyfallGame: React.FC = () => {
           onResetAllLocations={resetAllLocations}
           onToggleRemoveLocationAfterPlay={toggleRemoveLocationAfterPlay}
           onToggleEveryoneSpy={toggleEveryoneSpyMode}
+          onToggleRoles={toggleRolesMode}
           onAddLocation={addCustomLocation}
           onRemoveLocation={removeCustomLocation}
           onRestoreLocation={restorePlayedLocation}

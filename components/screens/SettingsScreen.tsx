@@ -29,6 +29,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
   onResetAllLocations,
   onToggleRemoveLocationAfterPlay,
   onToggleEveryoneSpy,
+  onToggleRoles,
   onAddLocation,
   onRemoveLocation,
   onRestoreLocation,
@@ -123,6 +124,24 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                   </div>
                   <div className="text-xs text-gray-500">
                     Special location mode where everyone is a spy!
+                  </div>
+                </div>
+              </label>
+
+              {/* Show Roles Setting */}
+              <label className="flex items-center space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={gameState.rolesEnabled}
+                  onChange={(e) => onToggleRoles(e.target.checked)}
+                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                <div>
+                  <div className="text-sm font-medium text-gray-900">
+                    Show roles
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Display specific roles for each location
                   </div>
                 </div>
               </label>
