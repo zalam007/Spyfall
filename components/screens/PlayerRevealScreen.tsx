@@ -54,7 +54,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
   return (
     <div className="min-h-screen flex items-center justify-center p-4 pb-8">
       {/* === CARD CONTAINER WITH FLIP ANIMATION === */}
-      <div className="perspective-1000 max-w-md w-full -mt-8">
+      <div className="perspective-1000 max-w-md w-full -mt-4">
         <div
           className={`card-flip-container ${isFlipped ? 'flipped' : ''} cursor-pointer`}
           onClick={handleCardFlip}
@@ -215,7 +215,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
           display: flex;
           flex-direction: column;
           justify-content: center;
-          padding: 1.5rem;
+          padding: 1.25rem;
           box-sizing: border-box;
         }
 
