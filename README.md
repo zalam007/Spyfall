@@ -4,7 +4,7 @@ A modern, mobile-first web version of the classic party game Spyfall. Pass the d
 
 ## How to Play
 
-- Enter the number of players (3–20)
+- Enter the number of players (3 or more)
 - Each player secretly views their role and location (except the spy, who only knows they're the spy)
 - Players take turns asking questions to deduce the spy or, if you're the spy, guess the location
 - Win by either identifying the spy or, as the spy, guessing the location
