@@ -11,12 +11,11 @@ A modern, mobile-first web version of the classic party game Spyfall. Pass the d
 
 ## Features
 
-- **Everyone is Spy mode**: Play a chaotic round where all players are spies
 - **Custom locations & roles**: Add, remove, and reset locations and roles
-- **Role toggle**: Option to play with or without specific character roles
+- **Everyone is Spy mode**: Play a special chaotic round where all players are spies
+- **Role toggle**: Option to play with or without location specific character roles
 - **Helper questions**: Built-in question generator
 - **Text-to-speech**: Hear location lists aloud
-- **Card flip animation & sound effects**
 - **Mobile-optimized, responsive UI**
 
 ## Tech Stack & Implementation
@@ -28,7 +27,7 @@ A modern, mobile-first web version of the classic party game Spyfall. Pass the d
 - **Audio**: Web Audio API for sound effects
 - **Speech**: Web Speech API for text-to-speech
 - **Game logic**: Centralized in a custom React hook (`useSpyfallGame`)
-- **Deployment**: Vercel (auto-deploy from main branch)
+- **Deployment**: Vercel
 
 ---
 
