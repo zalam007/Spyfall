@@ -34,15 +34,16 @@ const GameEndScreen: React.FC<GameEndScreenProps> = ({
 }) => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="game-card max-w-2xl w-full">
+      <div className="max-w-2xl w-full space-y-6">
         {/* === YOUR ORIGINAL TITLE === */}
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          🎯 Game Started!
-        </h2>
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-red-400 mb-6">
+            🎯 Game Started!
+          </h2>
+        </div>
 
-        {/* === LOCATIONS SECTION === */}
-        {/* Your original locations list with click-to-speak */}
-        <div className="mb-6">
+        {/* === LOCATIONS CARD === */}
+        <div className="game-card">
           <h3 className="text-xl font-semibold mb-4 text-gray-700">
             📍 Possible Locations
           </h3>
@@ -51,12 +52,14 @@ const GameEndScreen: React.FC<GameEndScreenProps> = ({
             onClick={onSpeakLocations}
             title={gameState.isCurrentlySpeaking ? "Click to mute" : "Click to hear locations read aloud"}
           >
-            {/* Your original locations display format */}
+            {/* Your original locations display format with bullet points */}
             <div className="whitespace-pre-line text-gray-700">
               {generateLocationsString(
                 gameState.availableLocations,
                 gameState.commonLocation || undefined
-              )}
+              ).split('\n').map((location, index) => 
+                location.trim() ? `• ${location}` : ''
+              ).filter(Boolean).join('\n')}
             </div>
             {/* Your original audio hint */}
             <div className="text-xs text-gray-500 mt-2">
@@ -65,22 +68,23 @@ const GameEndScreen: React.FC<GameEndScreenProps> = ({
           </div>
         </div>
 
-        {/* === HELPER QUESTIONS SECTION === */}
-        {/* Your original helper questions with green background */}
-        <div className="mt-6">
+        {/* === QUESTION IDEAS CARD === */}
+        <div className="game-card">
           <h3 className="text-xl font-semibold mb-4 text-gray-700">
             💡 Question Ideas
           </h3>
           <div className="bg-green-50 rounded-lg p-4 text-sm">
             <div className="whitespace-pre-line text-gray-700">
-              {gameState.helperQuestions}
+              {gameState.helperQuestions.split('\n').map((question, index) => 
+                question.trim() ? `• ${question.replace(/^\d+\.\s*/, '')}` : ''
+              ).filter(Boolean).join('\n')}
             </div>
           </div>
         </div>
 
-        {/* === YOUR ORIGINAL BUTTON SECTION === */}
-        <div className="flex gap-4 mt-8">
-          <button onClick={onNewGame} className="game-button flex-1">
+        {/* === NEW GAME BUTTON === */}
+        <div className="game-card">
+          <button onClick={onNewGame} className="game-button w-full">
             🏠 NEW GAME
           </button>
         </div>
