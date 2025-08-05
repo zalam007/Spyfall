@@ -49,7 +49,7 @@ const GameEndScreen: React.FC<GameEndScreenProps> = ({
           <div
             className="bg-gray-50 rounded-lg p-4 text-sm cursor-pointer hover:bg-gray-100 transition-colors"
             onClick={onSpeakLocations}
-            title="Click to hear locations read aloud"
+            title={gameState.isCurrentlySpeaking ? "Click to mute" : "Click to hear locations read aloud"}
           >
             {/* Your original locations display format */}
             <div className="whitespace-pre-line text-gray-700">
@@ -60,7 +60,7 @@ const GameEndScreen: React.FC<GameEndScreenProps> = ({
             </div>
             {/* Your original audio hint */}
             <div className="text-xs text-gray-500 mt-2">
-              🔊 Click to hear locations
+              {gameState.isCurrentlySpeaking ? "🔇 Click to mute" : "🔊 Click to hear locations"}
             </div>
           </div>
         </div>

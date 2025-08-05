@@ -252,3 +252,13 @@ export function stopSpeech(): void {
     window.speechSynthesis.cancel();
   }
 }
+
+/**
+ * Checks if speech synthesis is currently speaking
+ */
+export function isSpeaking(): boolean {
+  if ('speechSynthesis' in window) {
+    return window.speechSynthesis.speaking;
+  }
+  return false;
+}

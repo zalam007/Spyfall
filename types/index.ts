@@ -58,6 +58,7 @@ export type GameScreen = 'home' | 'howToPlay' | 'nextScreen' | 'playerReveal' | 
 export interface GameState {
   // === UI State ===
   currentScreen: GameScreen;        // Which screen is currently displayed
+  isCurrentlySpeaking: boolean;     // Whether text-to-speech is currently playing
   
   // === Game Setup ===
   numPlayers: number;               // Total number of players in the game

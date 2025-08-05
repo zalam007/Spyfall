@@ -8,6 +8,7 @@ import {
   generateHelperQuestions,
   speakText,
   stopSpeech,
+  isSpeaking,
   resetLocations,
   getAvailableLocations,
   LOCATIONS,
@@ -45,6 +46,7 @@ const SpyfallGame: React.FC = () => {
   const [helperQuestions, setHelperQuestions] = useState<string>("");
   const [playerInputValue, setPlayerInputValue] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isCurrentlySpeaking, setIsCurrentlySpeaking] = useState<boolean>(false);
 
   // Initialize locations on first load
   useEffect(() => {
@@ -169,13 +171,38 @@ const SpyfallGame: React.FC = () => {
 
   // Speak locations function (converted from your text-to-speech functionality)
   const speakLocations = () => {
-    stopSpeech();
-    if (availableLocations.length > 0) {
-      const locationsText = generateLocationsString(
-        availableLocations,
-        commonLocation || undefined
-      );
-      speakText(locationsText.replace(/\n/g, ", "), "female", "English");
+    if (isCurrentlySpeaking) {
+      // If currently speaking, stop the speech
+      stopSpeech();
+      setIsCurrentlySpeaking(false);
+    } else {
+      // If not speaking, start speaking
+      stopSpeech(); // Ensure any previous speech is stopped
+      if (availableLocations.length > 0) {
+        const locationsText = generateLocationsString(
+          availableLocations,
+          commonLocation || undefined
+        );
+        setIsCurrentlySpeaking(true);
+        
+        // Create utterance with event handlers
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(locationsText.replace(/\n/g, ", "));
+          utterance.rate = 1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          
+          // Set up event handlers
+          utterance.onend = () => {
+            setIsCurrentlySpeaking(false);
+          };
+          utterance.onerror = () => {
+            setIsCurrentlySpeaking(false);
+          };
+          
+          window.speechSynthesis.speak(utterance);
+        }
+      }
     }
   };
 
@@ -441,7 +468,7 @@ const SpyfallGame: React.FC = () => {
           <div
             className="bg-gray-50 rounded-lg p-4 text-sm cursor-pointer hover:bg-gray-100 transition-colors"
             onClick={speakLocations}
-            title="Click to hear locations read aloud"
+            title={isCurrentlySpeaking ? "Click to mute" : "Click to hear locations read aloud"}
           >
             <div className="whitespace-pre-line text-gray-700">
               {generateLocationsString(
@@ -450,7 +477,7 @@ const SpyfallGame: React.FC = () => {
               )}
             </div>
             <div className="text-xs text-gray-500 mt-2">
-              🔊 Click to hear locations
+              {isCurrentlySpeaking ? "🔇 Click to mute" : "🔊 Click to hear locations"}
             </div>
           </div>
         </div>

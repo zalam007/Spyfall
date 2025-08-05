@@ -47,6 +47,7 @@ export function useSpyfallGame() {
   const [gameState, setGameState] = useState<GameState>({
     // UI State - tracks which screen is currently shown
     currentScreen: 'home',
+    isCurrentlySpeaking: false,
     
     // Game Setup - configuration for the current game
     numPlayers: 0,
@@ -266,6 +267,7 @@ export function useSpyfallGame() {
     // because locations should stay removed between games
     setGameState({
       currentScreen: 'home',
+      isCurrentlySpeaking: false,
       numPlayers: 0,
       playerInputValue: '',
       errorMessage: '',
@@ -283,20 +285,48 @@ export function useSpyfallGame() {
    * 
    * This uses the Web Speech API to read the locations to players.
    * Useful during the main game when players need to hear all possible locations.
+   * Can be toggled on/off - if currently speaking, it will stop; if not speaking, it will start.
    */
   const speakLocations = () => {
-    stopSpeech(); // Stop any currently playing speech
-    
-    if (gameState.availableLocations.length > 0) {
-      // Generate the locations string and convert to speech-friendly format
-      const locationsText = generateLocationsString(
-        gameState.availableLocations, 
-        gameState.commonLocation || undefined
-      );
+    if (gameState.isCurrentlySpeaking) {
+      // If currently speaking, stop the speech
+      stopSpeech();
+      setGameState(prev => ({ ...prev, isCurrentlySpeaking: false }));
+    } else {
+      // If not speaking, start speaking
+      stopSpeech(); // Ensure any previous speech is stopped
       
-      // Replace newlines with commas for better speech flow
-      const speechText = locationsText.replace(/\n/g, ', ');
-      speakText(speechText, 'female', 'English');
+      if (gameState.availableLocations.length > 0) {
+        // Generate the locations string and convert to speech-friendly format
+        const locationsText = generateLocationsString(
+          gameState.availableLocations, 
+          gameState.commonLocation || undefined
+        );
+        
+        // Replace newlines with commas for better speech flow
+        const speechText = locationsText.replace(/\n/g, ', ');
+        
+        // Set speaking state
+        setGameState(prev => ({ ...prev, isCurrentlySpeaking: true }));
+        
+        // Create utterance with event handlers
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(speechText);
+          utterance.rate = 1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          
+          // Set up event handlers
+          utterance.onend = () => {
+            setGameState(prev => ({ ...prev, isCurrentlySpeaking: false }));
+          };
+          utterance.onerror = () => {
+            setGameState(prev => ({ ...prev, isCurrentlySpeaking: false }));
+          };
+          
+          window.speechSynthesis.speak(utterance);
+        }
+      }
     }
   };
 
