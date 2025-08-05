@@ -104,7 +104,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     Remove location after play
                   </div>
                   <div className="text-xs text-gray-500">
-                    When enabled, played locations won't appear in future games
+                    Played locations won't appear in future games
                   </div>
                 </div>
               </label>
@@ -122,7 +122,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     Everyone is spy mode
                   </div>
                   <div className="text-xs text-gray-500">
-                    Enable mode where everyone can be a spy (no common location)
+                    Special location mode where everyone is a spy!
                   </div>
                 </div>
               </label>
@@ -219,9 +219,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
             {/* Reset All Locations */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-3">
-                Reset all locations to start completely fresh. This brings back all previously played locations and removes any custom locations.
-              </p>
               <button
                 onClick={handleResetAllLocations}
                 className="game-button-secondary w-full"
@@ -240,6 +237,21 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
           >
             ← Back to Home
           </button>
+        </div>
+
+        {/* === FOOTER === */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500">
+            Created by{' '}
+            <a 
+              href="https://github.com/zalam007/Spyfall" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              Zami
+            </a>
+          </p>
         </div>
       </div>
     </div>

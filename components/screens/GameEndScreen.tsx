@@ -36,10 +36,10 @@ const GameEndScreen: React.FC<GameEndScreenProps> = ({
 }) => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full space-y-6">
+      <div className="max-w-2xl w-full space-y-4">
         {/* === YOUR ORIGINAL TITLE === */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-red-400 mb-6">
+          <h2 className="text-3xl font-bold text-red-400 mb-3">
             🎯 Game Started!
           </h2>
         </div>
