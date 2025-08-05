@@ -91,6 +91,9 @@ const SpyfallGame: React.FC = () => {
 
     // Audio functions
     speakLocations,
+    
+    // Helper question functions
+    generateNewQuestions,
   } = useSpyfallGame();
 
   // ===== SCREEN RENDERING =====
@@ -178,6 +181,7 @@ const SpyfallGame: React.FC = () => {
           onScreenChange={goToScreen}
           onNewGame={startNewGame}
           onSpeakLocations={speakLocations}
+          onGenerateNewQuestions={generateNewQuestions}
           onError={showError}
         />
       )}

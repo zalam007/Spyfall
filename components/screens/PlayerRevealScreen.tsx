@@ -116,14 +116,14 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
 
             {/* Flip hint */}
             <p className="text-xs text-gray-500 mt-4">
-              🔄 Click card to see all possible locations
+              🔄 Click card to see possible locations
             </p>
           </div>
 
           {/* === BACK OF CARD (All Locations) === */}
           <div className="card-face card-back game-card text-center">
-            <h2 className="text-xl font-bold mb-2 flex items-center justify-center gap-2">
-              🗺️ All Possible Locations
+            <h2 className="text-xl font-bold mb-1 flex items-center justify-center gap-2">
+              🗺️ Possible Locations
             </h2>
             
             <div className="bg-gray-50 rounded-lg p-3 text-sm flex-1 overflow-y-auto space-y-3">
@@ -142,7 +142,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
                         key={index} 
                         className={isCurrentLocation ? 'text-green-600 font-semibold' : ''}
                       >
-                        • {cleanLocation} {isCurrentLocation ? '← YOUR LOCATION' : ''}
+                        • {cleanLocation}
                       </div>
                     );
                   }).filter(Boolean)}
@@ -163,7 +163,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
                           key={index} 
                           className={isCurrentRole ? 'text-green-600 font-semibold' : ''}
                         >
-                          • {role} {isCurrentRole ? '← YOUR ROLE' : ''}
+                          • {role}
                         </div>
                       );
                     })}
@@ -173,7 +173,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
             </div>
 
             {/* Flip hint */}
-            <p className="text-xs text-gray-500 mt-4">
+            <p className="text-xs text-gray-500 mt-1">
               🔄 Click card to go back to your role
             </p>
           </div>

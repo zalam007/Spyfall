@@ -411,6 +411,20 @@ export function useSpyfallGame() {
     }
   };
 
+  // ===== HELPER QUESTION FUNCTIONS =====
+  /**
+   * Generate new random helper questions
+   * 
+   * This allows players to get fresh question ideas during gameplay
+   */
+  const generateNewQuestions = () => {
+    const questions = generateHelperQuestions();
+    setGameState(prev => ({
+      ...prev,
+      helperQuestions: questions
+    }));
+  };
+
   // ===== RETURN HOOK INTERFACE =====
   /**
    * Return all the state and functions that components need
@@ -449,5 +463,8 @@ export function useSpyfallGame() {
     
     // === AUDIO ===
     speakLocations,
+    
+    // === HELPER QUESTIONS ===
+    generateNewQuestions,
   };
 }

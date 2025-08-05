@@ -127,6 +127,7 @@ export interface SettingsScreenProps extends BaseScreenProps {
 export interface GameEndScreenProps extends BaseScreenProps {
   onNewGame: () => void;
   onSpeakLocations: () => void;
+  onGenerateNewQuestions: () => void;
 }
 
 /**
