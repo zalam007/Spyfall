@@ -31,5 +31,5 @@ A modern, mobile-first web version of the classic party game Spyfall. Pass the d
 
 ---
 
-Created by [Zami](https://github.com/zalam007/Spyfall)
+Created by [Zami](https://github.com/zalam007/Spyfall)\
 Play online on [spyfall-gamme.vercel.app](https://spyfall-gamme.vercel.app/)
