@@ -54,7 +54,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
   return (
     <div className="min-h-screen flex items-center justify-center p-4 pb-8">
       {/* === CARD CONTAINER WITH FLIP ANIMATION === */}
-      <div className="perspective-1000 max-w-md w-full -mt-4">
+      <div className="perspective-1000 max-w-md w-full mt-2">
         <div
           className={`card-flip-container ${isFlipped ? 'flipped' : ''} cursor-pointer`}
           onClick={handleCardFlip}
@@ -124,7 +124,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
 
           {/* === BACK OF CARD (All Locations) === */}
           <div className="card-face card-back game-card text-center">
-            <h2 className="text-xl font-bold mb-1 flex items-center justify-center gap-2">
+            <h2 className="text-lg font-bold mb-1 flex items-center justify-center gap-1">
               🗺️ Possible Locations
             </h2>
             
@@ -215,7 +215,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
           display: flex;
           flex-direction: column;
           justify-content: center;
-          padding: 1.25rem;
+          padding: 1rem;
           box-sizing: border-box;
         }
 
