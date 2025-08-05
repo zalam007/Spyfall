@@ -82,6 +82,12 @@ const SpyfallGame: React.FC = () => {
     resetAllLocations,
     startNewGame,
     toggleRemoveLocationAfterPlay,
+    toggleEveryoneSpyMode,
+    addCustomLocation,
+    removeCustomLocation,
+    restorePlayedLocation,
+    getCurrentAvailableLocations,
+    getCurrentPlayedLocations,
 
     // Audio functions
     speakLocations,
@@ -131,6 +137,12 @@ const SpyfallGame: React.FC = () => {
           onError={showError}
           onResetAllLocations={resetAllLocations}
           onToggleRemoveLocationAfterPlay={toggleRemoveLocationAfterPlay}
+          onToggleEveryoneSpy={toggleEveryoneSpyMode}
+          onAddLocation={addCustomLocation}
+          onRemoveLocation={removeCustomLocation}
+          onRestoreLocation={restorePlayedLocation}
+          getAvailableLocations={getCurrentAvailableLocations}
+          getPlayedLocations={getCurrentPlayedLocations}
         />
       )}
 

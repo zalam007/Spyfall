@@ -15,6 +15,13 @@ import {
   generateHelperQuestions,
   resetLocations,
   getAvailableLocations,
+  getPlayedLocations,
+  getAllLocations,
+  isEveryoneSpyEnabled,
+  toggleEveryoneSpy,
+  addLocation,
+  removeLocation,
+  restoreLocation,
   speakText,
   stopSpeech,
   generateLocationsString
@@ -51,6 +58,7 @@ export function useSpyfallGame() {
     
     // Game Settings - user preferences
     removeLocationAfterPlay: true, // Default to removing locations after play
+    everyoneSpyEnabled: true, // Default to enabling "Everyone is spy" mode
     
     // Game Setup - configuration for the current game
     numPlayers: 0,
@@ -255,6 +263,62 @@ export function useSpyfallGame() {
   };
 
   /**
+   * Toggle the "everyone is spy" setting
+   * 
+   * @param enabled - Whether to enable "Everyone is spy" mode
+   */
+  const toggleEveryoneSpyMode = (enabled: boolean) => {
+    toggleEveryoneSpy(enabled);
+    setGameState(prev => ({
+      ...prev,
+      everyoneSpyEnabled: enabled
+    }));
+  };
+
+  /**
+   * Add a custom location
+   * 
+   * @param name - Name of the location
+   * @param roles - Array of roles for this location
+   * @returns Whether the location was successfully added
+   */
+  const addCustomLocation = (name: string, roles: string[]): boolean => {
+    return addLocation(name, roles);
+  };
+
+  /**
+   * Remove a location from available locations
+   * 
+   * @param name - Name of the location to remove
+   */
+  const removeCustomLocation = (name: string) => {
+    removeLocation(name);
+  };
+
+  /**
+   * Restore a played location back to available
+   * 
+   * @param name - Name of the location to restore
+   */
+  const restorePlayedLocation = (name: string) => {
+    restoreLocation(name);
+  };
+
+  /**
+   * Get current available locations
+   */
+  const getCurrentAvailableLocations = (): string[] => {
+    return getAvailableLocations();
+  };
+
+  /**
+   * Get played locations (unavailable)
+   */
+  const getCurrentPlayedLocations = (): string[] => {
+    return getPlayedLocations();
+  };
+
+  /**
    * Reset all locations back to the original set
    * 
    * This is for completely fresh sessions where you want to play
@@ -284,6 +348,7 @@ export function useSpyfallGame() {
       currentScreen: 'home',
       isCurrentlySpeaking: false,
       removeLocationAfterPlay: prev.removeLocationAfterPlay, // Preserve user setting
+      everyoneSpyEnabled: prev.everyoneSpyEnabled, // Preserve user setting
       numPlayers: 0,
       playerInputValue: '',
       errorMessage: '',
@@ -375,6 +440,12 @@ export function useSpyfallGame() {
     resetAllLocations,
     startNewGame,
     toggleRemoveLocationAfterPlay,
+    toggleEveryoneSpyMode,
+    addCustomLocation,
+    removeCustomLocation,
+    restorePlayedLocation,
+    getCurrentAvailableLocations,
+    getCurrentPlayedLocations,
     
     // === AUDIO ===
     speakLocations,
