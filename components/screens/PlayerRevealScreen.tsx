@@ -128,7 +128,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
               🗺️ Possible Locations
             </h2>
             
-            <div className="bg-gray-50 rounded-lg p-3 text-sm flex-1 overflow-y-auto space-y-3">
+            <div className="bg-gray-50 rounded-lg p-2 text-xs flex-1 overflow-y-auto space-y-2">
               {/* Locations */}
               <div>
                 <div className="text-gray-700 text-left">
@@ -153,8 +153,8 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
 
               {/* Roles - only show for non-spy players and when roles are enabled */}
               {!isSpy && gameState.rolesEnabled && gameState.commonLocation && (
-                <div className="border-t border-gray-300 pt-3">
-                  <h3 className="text-sm font-semibold text-gray-600 mb-2">
+                <div className="border-t border-gray-300 pt-2">
+                  <h3 className="text-xs font-semibold text-gray-600 mb-1">
                     Possible Roles at {gameState.commonLocation.name}:
                   </h3>
                   <div className="text-gray-700 text-left">
@@ -198,7 +198,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
         .card-flip-container {
           position: relative;
           width: 100%;
-          height: 600px;
+          height: 550px;
           transform-style: preserve-3d;
           transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -215,7 +215,7 @@ const PlayerRevealScreen: React.FC<PlayerRevealScreenProps> = ({
           display: flex;
           flex-direction: column;
           justify-content: center;
-          padding: 1rem;
+          padding: 0.75rem;
           box-sizing: border-box;
         }
 
