@@ -1,32 +1,36 @@
-# Spyfall - Party Game 🕵️
+# Spyfall 🕵️
 
-A modern web-based version of the popular party game Spyfall, built with Next.js and React. This is a pass-and-play version where players share a single device to reveal their roles.
+A modern, mobile-first web version of the classic party game Spyfall. Pass the device around, reveal your secret role, and use clever questions to find the spy—or blend in if you are the spy!
 
-## 🎮 How to Play
+## How to Play
 
-1. **Setup**: Enter the number of players (3-20)
-2. **Role Assignment**: Pass the device around so each player can secretly view their role
-3. **The Spy**: One player will be assigned as the spy (they won't know the location)
-4. **Gameplay**: Take turns asking questions about the location to figure out who the spy is
-5. **Win Conditions**: 
-   - **Spy wins** if they correctly guess the location
-   - **Everyone else wins** if they identify the spy
+- Enter the number of players (3–20)
+- Each player secretly views their role and location (except the spy, who only knows they're the spy)
+- Players take turns asking questions to deduce the spy or, if you're the spy, guess the location
+- Win by either identifying the spy or, as the spy, guessing the location
 
-## 🎯 Features
+## Features
 
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
-- **Multiple Locations**: Includes Casino, Bank, Prison, Castle, and many more!
-- **Helper Questions**: Built-in question suggestions to keep the game flowing
-- **Text-to-Speech**: Click to hear location lists read aloud (where supported)
-- **Modern UI**: Clean, intuitive interface with smooth animations
+- **Everyone is Spy mode**: Play a chaotic round where all players are spies
+- **Custom locations & roles**: Add, remove, and reset locations and roles
+- **Role toggle**: Option to play with or without specific character roles
+- **Helper questions**: Built-in question generator
+- **Text-to-speech**: Hear location lists aloud
+- **Card flip animation & sound effects**
+- **Mobile-optimized, responsive UI**
 
+## Tech Stack & Implementation
 
-## 🔧 Tech Stack
-
-- **Framework**: Next.js 14
-- **Frontend**: React 18 with TypeScript
+- **Framework**: Next.js 14 (App Router)
+- **Frontend**: React 18 + TypeScript
 - **Styling**: Tailwind CSS
+- **Animation**: CSS 3D transforms via styled-jsx
+- **Audio**: Web Audio API for sound effects
+- **Speech**: Web Speech API for text-to-speech
+- **Game logic**: Centralized in a custom React hook (`useSpyfallGame`)
+- **Deployment**: Vercel (auto-deploy from main branch)
 
-## 📱 Mobile-Friendly
+---
 
-The game is fully responsive and works great on phones and tablets, making it perfect for parties and gatherings!
+Created by [Zami](https://github.com/zalam007/Spyfall)
+Play online on [spyfall-gamme.vercel.app](https://spyfall-gamme.vercel.app/)
