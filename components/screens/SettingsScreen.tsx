@@ -37,8 +37,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
 }) => {
   const [newLocationName, setNewLocationName] = useState('');
   const [showAddLocation, setShowAddLocation] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  // Get current location lists
+  // Get current location lists - recalculate on every render to ensure they're up to date
   const availableLocations = getAvailableLocations();
   const playedLocations = getPlayedLocations();
 
@@ -49,7 +50,27 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
       onAddLocation(newLocationName.trim(), defaultRoles);
       setNewLocationName('');
       setShowAddLocation(false);
+      // Force a re-render to update the location lists
+      setRefreshKey(prev => prev + 1);
     }
+  };
+
+  const handleResetAllLocations = () => {
+    onResetAllLocations();
+    // Force a re-render to update the location lists immediately
+    setRefreshKey(prev => prev + 1);
+  };
+
+  const handleRemoveLocation = (location: string) => {
+    onRemoveLocation(location);
+    // Force a re-render to update the location lists
+    setRefreshKey(prev => prev + 1);
+  };
+
+  const handleRestoreLocation = (location: string) => {
+    onRestoreLocation(location);
+    // Force a re-render to update the location lists
+    setRefreshKey(prev => prev + 1);
   };
 
   return (
@@ -158,7 +179,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                   <div key={index} className="flex items-center justify-between bg-white rounded p-2 text-sm">
                     <span className="text-gray-800">{location}</span>
                     <button
-                      onClick={() => onRemoveLocation(location)}
+                      onClick={() => handleRemoveLocation(location)}
                       className="text-red-600 hover:text-red-800 ml-2"
                       title="Remove this location"
                     >
@@ -184,7 +205,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     <div key={index} className="flex items-center justify-between bg-white rounded p-2 text-sm">
                       <span className="text-gray-600">{location}</span>
                       <button
-                        onClick={() => onRestoreLocation(location)}
+                        onClick={() => handleRestoreLocation(location)}
                         className="text-green-600 hover:text-green-800 ml-2"
                         title="Restore this location"
                       >
@@ -202,7 +223,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 Reset all locations to start completely fresh. This brings back all previously played locations and removes any custom locations.
               </p>
               <button
-                onClick={onResetAllLocations}
+                onClick={handleResetAllLocations}
                 className="game-button-secondary w-full"
               >
                 🔄 Reset All Locations
