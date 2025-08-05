@@ -46,7 +46,7 @@ const HowToPlayScreen: React.FC<BaseScreenProps> = ({ onScreenChange }) => {
           <div>
             <h3 className="text-xl font-semibold mb-2">🎮 Setup</h3>
             <ul className="list-disc list-inside space-y-1">
-              <li>Each player secretly views their role on this device</li>
+              <li>Each player secretly views their location on this device</li>
               <li>
                 Pass the device around so everyone can see their assignment
               </li>
@@ -65,16 +65,6 @@ const HowToPlayScreen: React.FC<BaseScreenProps> = ({ onScreenChange }) => {
               </li>
               <li>The spy wins if they correctly guess the location</li>
               <li>Everyone else wins if they correctly identify the spy</li>
-            </ul>
-          </div>
-
-          {/* Tips Section - Your original content */}
-          <div>
-            <h3 className="text-xl font-semibold mb-2">💡 Tips</h3>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Use the helper questions for inspiration</li>
-              <li>Pay attention to vague or suspicious answers</li>
-              <li>Don't be too obvious about your role!</li>
             </ul>
           </div>
         </div>

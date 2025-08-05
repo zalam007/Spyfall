@@ -49,6 +49,9 @@ export function useSpyfallGame() {
     currentScreen: 'home',
     isCurrentlySpeaking: false,
     
+    // Game Settings - user preferences
+    removeLocationAfterPlay: true, // Default to removing locations after play
+    
     // Game Setup - configuration for the current game
     numPlayers: 0,
     playerInputValue: '',
@@ -150,7 +153,7 @@ export function useSpyfallGame() {
     // Use the original game logic to assign locations and roles
     console.log('🎲 Available locations before game:', getAvailableLocations());
     
-    const gameData = assignPlayerLocationsAndRoles(players);
+    const gameData = assignPlayerLocationsAndRoles(players, gameState.removeLocationAfterPlay);
     
     // Debug logging (matches original Code.org debugging)
     console.log('🎯 Selected location:', gameData.commonLocation.name);
@@ -240,6 +243,18 @@ export function useSpyfallGame() {
 
   // ===== GAME MANAGEMENT FUNCTIONS =====
   /**
+   * Toggle the "remove location after play" setting
+   * 
+   * @param enabled - Whether to remove locations after they're played
+   */
+  const toggleRemoveLocationAfterPlay = (enabled: boolean) => {
+    setGameState(prev => ({
+      ...prev,
+      removeLocationAfterPlay: enabled
+    }));
+  };
+
+  /**
    * Reset all locations back to the original set
    * 
    * This is for completely fresh sessions where you want to play
@@ -257,17 +272,18 @@ export function useSpyfallGame() {
    * This resets the game state back to the home screen but does NOT
    * reset the location pool (locations used in previous games stay removed).
    * This matches the original Code.org behavior.
+   * 
+   * NOTE: User settings (like removeLocationAfterPlay) are preserved.
    */
   const startNewGame = () => {
     stopSpeech(); // Stop any currently playing speech
     playNewGame(); // Play new game sound
     
-    // Reset all game state back to initial values
-    // NOTE: We deliberately do NOT call resetLocations() here
-    // because locations should stay removed between games
-    setGameState({
+    // Reset game state but preserve user settings
+    setGameState(prev => ({
       currentScreen: 'home',
       isCurrentlySpeaking: false,
+      removeLocationAfterPlay: prev.removeLocationAfterPlay, // Preserve user setting
       numPlayers: 0,
       playerInputValue: '',
       errorMessage: '',
@@ -276,7 +292,7 @@ export function useSpyfallGame() {
       availableLocations: [],
       helperQuestions: '',
       currentPlayerIndex: 0,
-    });
+    }));
   };
 
   // ===== TEXT-TO-SPEECH FUNCTIONS =====
@@ -358,6 +374,7 @@ export function useSpyfallGame() {
     // === GAME MANAGEMENT ===
     resetAllLocations,
     startNewGame,
+    toggleRemoveLocationAfterPlay,
     
     // === AUDIO ===
     speakLocations,

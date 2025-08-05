@@ -83,9 +83,10 @@ let gameLocations = [...LOCATIONS];
  * Converted from the original assignPlayerLocationsAndRoles function
  * This matches your Code.org logic exactly
  * @param numPlayers - Number of players in the game
+ * @param removeLocationAfterPlay - Whether to remove location from pool after using it
  * @returns Object containing player info, common location, and available locations
  */
-export function assignPlayerLocationsAndRoles(numPlayers: number) {
+export function assignPlayerLocationsAndRoles(numPlayers: number, removeLocationAfterPlay: boolean = true) {
   // Initialize array to store each player's assigned location and role
   const playerInfo: PlayerInfo[] = [];
   
@@ -133,9 +134,11 @@ export function assignPlayerLocationsAndRoles(numPlayers: number) {
     }
   }
   
-  // AFTER creating display list and assigning roles, remove the selected location 
-  // from gameLocations to prevent reuse in future games
-  gameLocations.splice(randomLocationIndex, 1);
+  // AFTER creating display list and assigning roles, conditionally remove the selected location 
+  // from gameLocations to prevent reuse in future games (only if setting is enabled)
+  if (removeLocationAfterPlay) {
+    gameLocations.splice(randomLocationIndex, 1);
+  }
   
   return {
     playerInfo,

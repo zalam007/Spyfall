@@ -6,7 +6,7 @@
  * - Enter the number of players (3-20)
  * - Start a new game
  * - Access the "How to Play" instructions
- * - Reset all locations (for fresh sessions)
+ * - Access game settings
  *
  * Originally this was part of a large component, but breaking it out
  * makes it easier to understand, test, and maintain.
@@ -27,7 +27,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   gameState,
   onScreenChange,
   onStartGame,
-  onResetLocations,
   onPlayerInputChange,
 }) => {
   return (
@@ -82,12 +81,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
             📖 HOW TO PLAY
           </button>
 
-          {/* Reset Locations Button - Admin action */}
+          {/* Settings Button - Access game settings */}
           <button
-            onClick={onResetLocations}
-            className="game-button-secondary w-full text-sm"
+            onClick={() => onScreenChange("settings")}
+            className="game-button-secondary w-full"
           >
-            🔄 RESET ALL LOCATIONS
+            ⚙️ SETTINGS
           </button>
         </div>
       </div>

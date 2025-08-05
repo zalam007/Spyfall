@@ -39,6 +39,7 @@ import { useSpyfallGame } from "../hooks/useSpyfallGame";
 import {
   HomeScreen,
   HowToPlayScreen,
+  SettingsScreen,
   NextScreen,
   PlayerRevealScreen,
   GameEndScreen,
@@ -80,6 +81,7 @@ const SpyfallGame: React.FC = () => {
     // Game management functions
     resetAllLocations,
     startNewGame,
+    toggleRemoveLocationAfterPlay,
 
     // Audio functions
     speakLocations,
@@ -105,7 +107,6 @@ const SpyfallGame: React.FC = () => {
           gameState={gameState}
           onScreenChange={goToScreen}
           onStartGame={startGame}
-          onResetLocations={resetAllLocations}
           onPlayerInputChange={handlePlayerInputChange}
           onError={showError}
         />
@@ -118,6 +119,18 @@ const SpyfallGame: React.FC = () => {
           gameState={gameState}
           onScreenChange={goToScreen}
           onError={showError}
+        />
+      )}
+
+      {/* === SETTINGS SCREEN === */}
+      {/* Game settings and preferences */}
+      {gameState.currentScreen === "settings" && (
+        <SettingsScreen
+          gameState={gameState}
+          onScreenChange={goToScreen}
+          onError={showError}
+          onResetAllLocations={resetAllLocations}
+          onToggleRemoveLocationAfterPlay={toggleRemoveLocationAfterPlay}
         />
       )}
 
