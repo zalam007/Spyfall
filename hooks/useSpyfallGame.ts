@@ -59,6 +59,7 @@ export function useSpyfallGame() {
     // Game Settings - user preferences
     removeLocationAfterPlay: true, // Default to removing locations after play
     everyoneSpyEnabled: true, // Default to enabling "Everyone is spy" mode
+    rolesEnabled: true, // Default to showing roles in the game
     
     // Game Setup - configuration for the current game
     numPlayers: 0,
@@ -276,6 +277,18 @@ export function useSpyfallGame() {
   };
 
   /**
+   * Toggle the roles display setting
+   * 
+   * @param enabled - Whether to show roles in the game
+   */
+  const toggleRolesMode = (enabled: boolean) => {
+    setGameState(prev => ({
+      ...prev,
+      rolesEnabled: enabled
+    }));
+  };
+
+  /**
    * Add a custom location
    * 
    * @param name - Name of the location
@@ -349,6 +362,7 @@ export function useSpyfallGame() {
       isCurrentlySpeaking: false,
       removeLocationAfterPlay: prev.removeLocationAfterPlay, // Preserve user setting
       everyoneSpyEnabled: prev.everyoneSpyEnabled, // Preserve user setting
+      rolesEnabled: prev.rolesEnabled, // Preserve user setting
       numPlayers: 0,
       playerInputValue: '',
       errorMessage: '',
@@ -411,6 +425,20 @@ export function useSpyfallGame() {
     }
   };
 
+  // ===== HELPER QUESTION FUNCTIONS =====
+  /**
+   * Generate new random helper questions
+   * 
+   * This allows players to get fresh question ideas during gameplay
+   */
+  const generateNewQuestions = () => {
+    const questions = generateHelperQuestions();
+    setGameState(prev => ({
+      ...prev,
+      helperQuestions: questions
+    }));
+  };
+
   // ===== RETURN HOOK INTERFACE =====
   /**
    * Return all the state and functions that components need
@@ -441,6 +469,7 @@ export function useSpyfallGame() {
     startNewGame,
     toggleRemoveLocationAfterPlay,
     toggleEveryoneSpyMode,
+    toggleRolesMode,
     addCustomLocation,
     removeCustomLocation,
     restorePlayedLocation,
@@ -449,5 +478,8 @@ export function useSpyfallGame() {
     
     // === AUDIO ===
     speakLocations,
+    
+    // === HELPER QUESTIONS ===
+    generateNewQuestions,
   };
 }

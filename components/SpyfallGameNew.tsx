@@ -83,6 +83,7 @@ const SpyfallGame: React.FC = () => {
     startNewGame,
     toggleRemoveLocationAfterPlay,
     toggleEveryoneSpyMode,
+    toggleRolesMode,
     addCustomLocation,
     removeCustomLocation,
     restorePlayedLocation,
@@ -91,6 +92,9 @@ const SpyfallGame: React.FC = () => {
 
     // Audio functions
     speakLocations,
+    
+    // Helper question functions
+    generateNewQuestions,
   } = useSpyfallGame();
 
   // ===== SCREEN RENDERING =====
@@ -138,6 +142,7 @@ const SpyfallGame: React.FC = () => {
           onResetAllLocations={resetAllLocations}
           onToggleRemoveLocationAfterPlay={toggleRemoveLocationAfterPlay}
           onToggleEveryoneSpy={toggleEveryoneSpyMode}
+          onToggleRoles={toggleRolesMode}
           onAddLocation={addCustomLocation}
           onRemoveLocation={removeCustomLocation}
           onRestoreLocation={restorePlayedLocation}
@@ -178,6 +183,7 @@ const SpyfallGame: React.FC = () => {
           onScreenChange={goToScreen}
           onNewGame={startNewGame}
           onSpeakLocations={speakLocations}
+          onGenerateNewQuestions={generateNewQuestions}
           onError={showError}
         />
       )}

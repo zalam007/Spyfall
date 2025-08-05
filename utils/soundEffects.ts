@@ -158,6 +158,33 @@ class SoundManager {
       }, index * 100);
     });
   }
+
+  // Card flip sound - quick swoosh-like sound
+  playCardFlip() {
+    // Quick frequency sweep to simulate card flip swoosh
+    this.playTone(400, 0.08, 0.15, 'triangle');
+    setTimeout(() => {
+      this.playTone(300, 0.08, 0.12, 'triangle');
+    }, 50);
+    setTimeout(() => {
+      this.playTone(500, 0.06, 0.1, 'sine');
+    }, 100);
+  }
+
+  // Dice roll sound - quick rattling sound
+  playDiceRoll() {
+    // Rapid sequence of random frequencies to simulate dice rattling
+    const frequencies = [200, 300, 250, 350, 280, 320, 260];
+    frequencies.forEach((freq, index) => {
+      setTimeout(() => {
+        this.playTone(freq, 0.06, 0.08, 'square');
+      }, index * 30);
+    });
+    // Final "settle" sound
+    setTimeout(() => {
+      this.playTone(150, 0.15, 0.1, 'sine');
+    }, 250);
+  }
 }
 
 // Create a single instance to use throughout the app
@@ -172,3 +199,5 @@ export const playSeenRole = () => soundManager.playSeenRole();
 export const playResetLocations = () => soundManager.playResetLocations();
 export const playError = () => soundManager.playError();
 export const playSuccess = () => soundManager.playSuccess();
+export const playCardFlip = () => soundManager.playCardFlip();
+export const playDiceRoll = () => soundManager.playDiceRoll();

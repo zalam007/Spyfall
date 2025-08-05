@@ -17,6 +17,7 @@
 
 import React from "react";
 import { generateLocationsString } from "../../utils/gameLogic";
+import { playDiceRoll } from "../../utils/soundEffects";
 import type { GameEndScreenProps } from "../../types";
 
 /**
@@ -31,13 +32,14 @@ const GameEndScreen: React.FC<GameEndScreenProps> = ({
   gameState,
   onNewGame,
   onSpeakLocations,
+  onGenerateNewQuestions,
 }) => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full space-y-6">
+      <div className="max-w-2xl w-full space-y-4">
         {/* === YOUR ORIGINAL TITLE === */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-red-400 mb-6">
+          <h2 className="text-3xl font-bold text-red-400 mb-3">
             🎯 Game Started!
           </h2>
         </div>
@@ -69,25 +71,36 @@ const GameEndScreen: React.FC<GameEndScreenProps> = ({
         </div>
 
         {/* === QUESTION IDEAS CARD === */}
-        <div className="game-card">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">
-            💡 Question Ideas
+        <div className="game-card py-4">
+          <h3 
+            className="text-xl font-semibold mb-2 text-gray-700 cursor-pointer hover:text-gray-900 transition-colors flex items-center"
+            onClick={() => {
+              playDiceRoll();
+              onGenerateNewQuestions();
+            }}
+            title="Click to get new random questions"
+          >
+            🎲 Question Ideas
           </h3>
-          <div className="bg-green-50 rounded-lg p-4 text-sm">
-            <div className="whitespace-pre-line text-gray-700">
-              {gameState.helperQuestions.split('\n').map((question, index) => 
-                question.trim() ? `• ${question.replace(/^\d+\.\s*/, '')}` : ''
-              ).filter(Boolean).join('\n')}
+          <div className="bg-gray-50 rounded-lg p-3 text-sm">
+            <div className="text-gray-700 space-y-1">
+              {gameState.helperQuestions.split('\n').map((question, index) => {
+                const cleanQuestion = question.replace(/^\d+\.\s*/, '').trim();
+                return cleanQuestion ? (
+                  <div key={index} className="flex">
+                    <span className="mr-2">•</span>
+                    <span>{cleanQuestion}</span>
+                  </div>
+                ) : null;
+              }).filter(Boolean)}
             </div>
           </div>
         </div>
 
         {/* === NEW GAME BUTTON === */}
-        <div className="game-card">
-          <button onClick={onNewGame} className="game-button w-full">
-            🏠 NEW GAME
-          </button>
-        </div>
+        <button onClick={onNewGame} className="game-button w-full">
+          🏠 NEW GAME
+        </button>
       </div>
     </div>
   );
